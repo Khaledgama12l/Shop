@@ -1,56 +1,36 @@
-let counter = document.getElementById("counter");
+const img = new Image();
+img.src = reader.result;
 
-function updateCounter(event) {
-  let button = event.target;
-  button.innerHTML = "تمت الإضافة ✅";
-  let count = parseInt(counter.innerText);
-  count += 1;
-  counter.innerText = count;
-  counter.style.display = "flex";
-}
+img.onload = function() {
+    const canvas = document.createElement('canvas');
+    const targetWidth = 200;
+    const targetHeight = 150;
+    canvas.width = targetWidth;
+    canvas.height = targetHeight;
 
-// عرض المنتجات من localStorage
-let productsSection = document.getElementById("products");
-let products = JSON.parse(localStorage.getItem("products")) || [];
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
 
-if (products.length === 0) {
-  productsSection.innerHTML = "<p style='text-align:center;'>لا توجد منتجات بعد.</p>";
-} else {
-  products.forEach(p => {
-    let card = document.createElement("div");
-    card.classList.add("product-card");
-    card.innerHTML = `
-      <img src="${p.image}" alt="${p.name}">
-      <h4>${p.name}</h4>
-      <p>السعر: ${p.price} جنيه</p>
-      <button class="buy">أضف إلى السلة</button>
-    `;
-    productsSection.appendChild(card);
-  });
-}
+    const imageBase64 = canvas.toDataURL('image/jpeg', 0.7);
+    // بعدها تخزن imageBase64 في localStorage
+};
+function displayProducts() {
+    productsSection.innerHTML = "";
 
-// ربط كل زرار بالدالة
-let buyButtons = document.querySelectorAll(".buy");
-buyButtons.forEach(btn => btn.addEventListener("click", updateCounter));
-
-// إضافة منتج جديد (لو النموذج موجود)
-let form = document.getElementById("productForm");
-if (form) {
-  form.addEventListener("submit", e => {
-    e.preventDefault();
-    let name = document.getElementById("name").value.trim();
-    let price = document.getElementById("price").value.trim();
-    let image = document.getElementById("image").value.trim();
-
-    if (!name || !price || !image) {
-      alert("من فضلك املأ جميع الحقول!");
-      return;
+    if (products.length === 0) {
+        productsSection.innerHTML = "<p style='text-align:center;'>لا توجد منتجات بعد.</p>";
+        return;
     }
 
-    let products = JSON.parse(localStorage.getItem("products")) || [];
-    products.push({ name, price, image });
-    localStorage.setItem("products", JSON.stringify(products));
-    alert("✅ تمت إضافة المنتج بنجاح!");
-    e.target.reset();
-  });
+    products.forEach((p, index) => {
+        const card = document.createElement("div");
+        card.classList.add("product-card");
+        card.innerHTML = `
+            <img src="${p.image}" alt="${p.name}">
+            <h4>${p.name}</h4>
+            <p>السعر: ${p.price} جنيه</p>
+            <button class="buy" data-index="${index}">أضف إلى السلة</button>
+        `;
+        productsSection.appendChild(card);
+    });
 }

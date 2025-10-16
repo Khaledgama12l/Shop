@@ -277,3 +277,72 @@ footer {
     justify-content: center;
     display: none;
 }
+.products {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding: 20px;
+}
+
+.product-card {
+    background-color: #111;
+    border: 1px solid #222;
+    border-radius: 10px;
+    padding: 15px;
+    width: 220px; /* عرض ثابت للكارت */
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0,191,255,0.1);
+}
+
+.product-card img {
+    width: 200px;       /* عرض الصورة ثابت */
+    height: 150px;      /* ارتفاع ثابت */
+    object-fit: cover;  /* تقص الصورة لتملأ المساحة بدون تشويه */
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.product-card h4 {
+    font-size: 18px;
+    margin: 5px 0;
+}
+
+.product-card p {
+    margin: 5px 0 10px;
+}
+
+.product-card button {
+    padding: 8px 12px;
+    background-color: #00BFFF;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.product-card button:hover {
+    background-color: #009ACD;
+}
+.product-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* زر الشراء في الأسفل دائمًا */
+    height: 350px; /* ارتفاع ثابت لكل الكروت */
+}
+
+.product-card img {
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin: 0 auto;
+}
+.home{
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 130px;
+    height: 40px;
+}

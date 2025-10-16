@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حسابي - MyShop</title>
+<style>
+body { font-family:'Cairo',sans-serif; background:#000; color:#fff; margin:0; }
+.account-container { max-width:900px; margin:50px auto; background:#111; border:1px solid #222; border-radius:10px; padding:30px; display:flex; flex-direction:column; gap:30px; }
+.account-header { text-align:center; color:#00BFFF; font-size:24px; font-weight:bold; }
+.account-section { display:flex; flex-direction:column; gap:15px; }
+.account-section label { display:block; margin-bottom:5px; }
+.account-section input { width:100%; padding:10px; border-radius:6px; border:1px solid #222; background:#000; color:#fff; }
+.account-section button { width:fit-content; padding:10px 20px; background:#00BFFF; color:#fff; border:none; border-radius:6px; cursor:pointer; }
+.account-section button:hover { background:#009ACD; }
+.orders-list { background:#111; border:1px solid #222; border-radius:6px; padding:15px; }
+.orders-list div { display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid #222; padding-bottom:5px; }
+.orders-list div:last-child { border-bottom:none; }
+.orders-list button { padding:4px 8px; background:#00BFFF; border:none; border-radius:4px; cursor:pointer; color:#fff; }
+.orders-list button:hover { background:#009ACD; }
+</style>
+</head>
+<body>
+
+<div class="account-container">
+    <div class="account-header">حسابي</div>
+
+    <div class="account-section">
+        <h3>البيانات الشخصية</h3>
+        <label for="username">الاسم:</label>
+        <input type="text" id="username">
+        <label for="email">الإيميل:</label>
+        <input type="email" id="email">
+        <label for="password">كلمة المرور:</label>
+        <input type="password" id="password">
+        <button id="saveData">حفظ البيانات</button>
+        <button id="logoutBtn" style="background:red; margin-top:10px;">تسجيل خروج</button>
+    </div>
+
+    <div class="account-section">
+        <h3>الطلبات السابقة</h3>
+        <div class="orders-list" id="ordersList">لا توجد طلبات بعد.</div>
+    </div>
+</div>
+
+<script>
+const userData = JSON.parse(localStorage.getItem("user"));
+if(!userData){
+    alert("❌ يرجى تسجيل الدخول أولًا!");
+    window.location.href = "login.html";
+}
+
+// عرض البيانات
+const usernameInput = document.getElementById("username");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+usernameInput.value = userData.name;
+emailInput.value = userData.email;
+passwordInput.value = userData.password;
+
+// حفظ البيانات
+document.getElementById("saveData").addEventListener("click", () => {
+    const name = usernameInput.value.trim();
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+    if(!name || !email || !password){ alert("يرجى ملء جميع الحقول!"); return; }
+
+    localStorage.setItem("user", JSON.stringify({ name, email, password }));
+    alert("✅ تم حفظ البيانات بنجاح!");
+});
+
+// تسجيل خروج
+document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.removeItem("user");
+    alert("✅ تم تسجيل الخروج!");
+    window.location.href = "login.html";
+});
+
+// عرض الطلبات السابقة
+const cart = JSON.parse(localStorage.getItem("cart")) || [];
+const ordersList = document.getElementById("ordersList");
+
+function displayOrders(){
+    if(cart.length===0){ ordersList.innerHTML="لا توجد طلبات بعد."; return; }
+    ordersList.innerHTML="";
+    cart.forEach((item,index)=>{
+        const div = document.createElement("div");
+        div.innerHTML = `<span>${item.name} - ${item.quantity} × ${item.price} جنيه</span>
+                         <button data-index="${index}" class="deleteOrder">حذف</button>`;
+        ordersList.appendChild(div);
+    });
+    document.querySelectorAll(".deleteOrder").forEach(btn=>{
+        btn.addEventListener("click", e=>{
+            const i = e.target.dataset.index;
+            cart.splice(i,1);
+            localStorage.setItem("cart",JSON.stringify(cart));
+            displayOrders();
+        });
+    });
+}
+
+displayOrders();
+</script>
+
+</body>
+</html>
