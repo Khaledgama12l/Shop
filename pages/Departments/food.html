@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>قسم الأكل - Dark Shop</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+
+  <!-- ✅ الهيدر -->
+  <header class="top-header">
+    <div class="logo">Dark shop</div>
+    <a href="/index.html" class="home"></a>
+
+    <div class="addProduct" id="addProductContainer" style="display:none;">
+      <a href="/addProduct.html">إضافة منتج 🛠️</a>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="ابحث عن منتج في قسم الأكل...">
+      <button id="searchBtn">بحث</button>
+    </div>
+
+    <div class="header-icons">
+      <a href="/index.html">الرئيسية</a>
+      <a href="account.html">الحساب</a>
+      <a href="#">الطلبات</a>
+      <div id="count">
+        🛒 <span id="counter">0</span>
+        <a href="chart.html">السلة</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ✅ الأقسام -->
+  <nav class="nav-bar">
+    <a href="offers.html">العروض</a>
+    <a href="electronics.html">الإلكترونيات</a>
+    <a href="mobiles.html">الموبايلات</a>
+    <a href="fashion.html">الموضة</a>
+    <a href="home.html">الأجهزة المنزلية</a>
+    <a href="food.html" class="active">الأكل</a>
+  </nav>
+
+  <!-- ✅ عنوان القسم -->
+  <section class="hero">
+    <h1>قسم الأكل 🍔</h1>
+    <p>كل ما تحتاجه من أطعمة ومشروبات بأفضل الأسعار 🛒</p>
+  </section>
+
+  <!-- ✅ المنتجات -->
+  <section class="products" id="productsSection">
+    <p style="text-align:center; color:#aaa;">جارٍ تحميل المنتجات...</p>
+  </section>
+
+  <!-- ✅ الفوتر -->
+  <footer>
+    <div class="footer-top">
+      <div class="footer-section">
+        <h4>Dark shop عن</h4>
+        <a href="#">من نحن</a>
+        <a href="#">انضم إلينا</a>
+        <a href="#">المدونة</a>
+        <a href="#">تواصل معنا</a>
+      </div>
+
+      <div class="footer-section">
+        <h4>خدمة العملاء</h4>
+        <a href="#">مساعدة</a>
+        <a href="#">الأسئلة الشائعة</a>
+        <a href="#">سياسة الإرجاع</a>
+        <a href="#">طرق الدفع</a>
+      </div>
+
+      <div class="footer-section">
+        <h4>حسابك</h4>
+        <a href="login.html">تسجيل الدخول</a>
+        <a href="#">طلباتي</a>
+        <a href="#">المفضلة</a>
+        <a href="#">العناوين</a>
+      </div>
+
+      <div class="footer-section">
+        <h4>سياسات</h4>
+        <a href="#">الشروط والأحكام</a>
+        <a href="#">سياسة الخصوصية</a>
+        <a href="#">الأمان والبيانات</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>تابعنا على</p>
+      <div class="social-links">
+        <a href="#">فيسبوك</a>
+        <a href="#">إنستجرام</a>
+        <a href="#">تويتر</a>
+        <a href="#">يوتيوب</a>
+      </div>
+      <p class="copy">© 2025 Dark Shop - جميع الحقوق محفوظة</p>
+    </div>
+  </footer>
+
+  <!-- ✅ سكربت عرض المنتجات الخاصة بقسم الأكل -->
+  <script>
+  const productsSection = document.getElementById("productsSection");
+  const products = JSON.parse(localStorage.getItem("products")) || [];
+
+  function displayFood() {
+    productsSection.innerHTML = "";
+
+    // ✅ تصفية المنتجات حسب القسم "الأكل"
+    const foodItems = products.filter(p => p.section === "الأكل بقا");
+
+    if (foodItems.length === 0) {
+      productsSection.innerHTML = "<p style='text-align:center; color:#ccc;'>لا توجد منتجات طعام حالياً.</p>";
+      return;
+    }
+
+    foodItems.forEach((p, index) => {
+      const card = document.createElement("div");
+      card.classList.add("product-card");
+      card.innerHTML = `
+        <img src="${p.image}" alt="${p.name}">
+        <h4>${p.name}</h4>
+        <p>السعر: ${p.price} جنيه</p>
+        <button class="buy" data-index="${index}">أضف إلى السلة 🛒</button>
+      `;
+      productsSection.appendChild(card);
+    });
+  }
+
+  displayFood();
+  </script>
+
+</body>
+</html>

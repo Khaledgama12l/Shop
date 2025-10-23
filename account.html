@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>حسابي - MyShop</title>
+<link rel="stylesheet" href="assets/css/style.css">
 <style>
 body { font-family:'Cairo',sans-serif; background:#000; color:#fff; margin:0; }
 .account-container { max-width:900px; margin:50px auto; background:#111; border:1px solid #222; border-radius:10px; padding:30px; display:flex; flex-direction:column; gap:30px; }
@@ -19,9 +20,33 @@ body { font-family:'Cairo',sans-serif; background:#000; color:#fff; margin:0; }
 .orders-list button { padding:4px 8px; background:#00BFFF; border:none; border-radius:4px; cursor:pointer; color:#fff; }
 .orders-list button:hover { background:#009ACD; }
 </style>
+
 </head>
 <body>
+    <header class="top-header">
+    <div class="logo">Dark shop</div>
+    <a href="index.html" class="home"></a>
+    <div class="addProduct" id="addProductContainer" style="display:none;">
+    <a href="/addProduct.html">إضافة منتج 🛠️</a>
+</div>
 
+    <div class="search-bar">
+        <input type="text" placeholder="ابحث عن منتجات، علامات تجارية والمزيد...">
+        <button>بحث</button>
+    </div>
+
+    <div class="header-icons">
+        <a href="index.html">الرئيسية</a>
+        <a href="account.html">الحساب</a>
+        <a href="#">الطلبات</a>
+
+        <!-- ✅ خلى العداد داخل عنصر منفصل -->
+        <div id="count">
+            🛒 <span id="counter">0</span>
+            <a href="chart.html">السلة</a>
+        </div>
+    </div>
+</header>
 <div class="account-container">
     <div class="account-header">حسابي</div>
 
@@ -86,7 +111,7 @@ function displayOrders(){
     cart.forEach((item,index)=>{
         const div = document.createElement("div");
         div.innerHTML = `<span>${item.name} - ${item.quantity} × ${item.price} جنيه</span>
-                         <button data-index="${index}" class="deleteOrder">حذف</button>`;
+        <button data-index="${index}" class="deleteOrder">حذف</button>`;
         ordersList.appendChild(div);
     });
     document.querySelectorAll(".deleteOrder").forEach(btn=>{
@@ -100,6 +125,15 @@ function displayOrders(){
 }
 
 displayOrders();
+// ✅ إظهار زر إضافة المنتج للأدمن فقط
+const addProductContainer = document.getElementById("addProductContainer");
+
+if (userData && userData.role === "admin") {
+    addProductContainer.style.display = "block";
+} else {
+    addProductContainer.style.display = "none";
+}
+
 </script>
 
 </body>
