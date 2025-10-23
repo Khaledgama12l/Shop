@@ -11,36 +11,36 @@
   <!-- الهيدر -->
   <header class="top-header">
     <div class="logo">Dark shop</div>
-    <a href="/index.html" class="home"></a>
+    <a href="index.html" class="home"></a>
 
     <div class="addProduct" id="addProductContainer" style="display:none;">
       <a href="/addProduct.html">إضافة منتج 🛠️</a>
     </div>
 
     <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="ابحث عن موبايل...">
+      <input type="text" id="searchInput" placeholder="ابحث عن منتج في الإلكترونيات...">
       <button id="searchBtn">بحث</button>
     </div>
 
     <div class="header-icons">
       <a href="/index.html">الرئيسية</a>
-      <a href="/account.html">الحساب</a>
+      <a href="account.html">الحساب</a>
       <a href="#">الطلبات</a>
       <div id="count">
         🛒 <span id="counter">0</span>
-        <a href="/chart.html">السلة</a>
+        <a href="chart.html">السلة</a>
       </div>
     </div>
   </header>
 
-  <!-- الأقسام -->
+  <!-- ✅ الأقسام -->
   <nav class="nav-bar">
-    <a href="/pages/Departments/offers.html">العروض</a>
-    <a href="/pages/Departments/electronics.html">الإلكترونيات</a>
-    <a href="/pages/Departments/mobiles.html" class="active">الموبايلات</a>
-    <a href="/pages/Departments/fashion.html">الموضة</a>
-    <a href="/pages/Departments/home.html">الأجهزة المنزلية</a>
-    <a href="/pages/Departments/food.html">الأكل</a>
+    <a href="offers.html">العروض</a>
+    <a href="electronics.html" >الإلكترونيات</a>
+    <a href="mobiles.html" class="active" >الموبايلات</a>
+    <a href="fashion.html">الموضة</a>
+    <a href="home.html">الأجهزة المنزلية</a>
+    <a href="food.html">الأكل</a>
     <a href="#">المزيد</a>
   </nav>
 
@@ -51,9 +51,7 @@
   </section>
 
   <!-- المنتجات -->
-  <section class="products" id="productsSection">
-    <p style="text-align:center; color:#aaa;">جارٍ تحميل المنتجات...</p>
-  </section>
+  <section id="productsSection" data-section="الموبايلات"></section>
 
   <!-- الفوتر -->
   <footer>
@@ -100,68 +98,7 @@
   </footer>
 
   <!-- سكربت عرض المنتجات وإضافة للسلة -->
-  <script>
-    const productsSection = document.getElementById("productsSection");
-    const products = JSON.parse(localStorage.getItem("products")) || [];
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-    function updateCartCounter() {
-      const counter = document.getElementById("counter");
-      if (counter) counter.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
-    }
-
-    function displayMobiles() {
-      productsSection.innerHTML = "";
-
-      const mobiles = products.filter(p => p.section === "الموبايلات");
-
-      if (mobiles.length === 0) {
-        productsSection.innerHTML = "<p style='text-align:center; color:#ccc;'>لا توجد منتجات موبايلات حالياً.</p>";
-        return;
-      }
-
-      mobiles.forEach((p, index) => {
-        const card = document.createElement("div");
-        card.classList.add("product-card");
-        card.innerHTML = `
-          <img src="${p.image}" alt="${p.name}">
-          <h4>${p.name}</h4>
-          <p>السعر: ${p.price} جنيه</p>
-          <button class="buy" data-index="${index}" data-section="${p.section}">أضف إلى السلة 🛒</button>
-        `;
-        productsSection.appendChild(card);
-      });
-
-      bindAddToCartButtons();
-    }
-
-    function bindAddToCartButtons() {
-      document.querySelectorAll(".buy").forEach(btn => {
-        btn.addEventListener("click", e => {
-          const sectionName = e.target.dataset.section;
-          const productIndex = parseInt(e.target.dataset.index);
-
-          const filteredProducts = products.filter(p => p.section === sectionName);
-          const selectedProduct = filteredProducts[productIndex];
-
-          if (!selectedProduct) return alert("❌ المنتج غير موجود!");
-
-          const existing = cart.find(item => item.name === selectedProduct.name && item.section === selectedProduct.section);
-          if (existing) {
-            existing.quantity += 1;
-          } else {
-            cart.push({ ...selectedProduct, quantity: 1 });
-          }
-
-          localStorage.setItem("cart", JSON.stringify(cart));
-          updateCartCounter();
-        });
-      });
-    }
-
-    displayMobiles();
-    updateCartCounter();
-  </script>
+  <script src="/assets/js/products.js"></script>
 
 </body>
 </html>

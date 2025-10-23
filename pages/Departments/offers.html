@@ -105,40 +105,40 @@
 <body>
 
 <!-- ======= الهيدر ======= -->
-<header class="top-header">
+  <header class="top-header">
     <div class="logo">Dark shop</div>
-    <a href="/index.html" class="home"></a>
+    <a href="index.html" class="home"></a>
 
     <div class="addProduct" id="addProductContainer" style="display:none;">
-        <a href="/addProduct.html">إضافة منتج 🛠️</a>
+      <a href="/addProduct.html">إضافة منتج 🛠️</a>
     </div>
 
     <div class="search-bar">
-        <input type="text" placeholder="ابحث عن عروض...">
-        <button>بحث</button>
+      <input type="text" id="searchInput" placeholder="ابحث عن منتج في الإلكترونيات...">
+      <button id="searchBtn">بحث</button>
     </div>
 
     <div class="header-icons">
-        <a href="/index.html">الرئيسية</a>
-        <a href="/account.html">الحساب</a>
-        <a href="#">الطلبات</a>
-        <div id="count">
-            🛒 <span id="counter">0</span>
-            <a href="/chart.html">السلة</a>
-        </div>
+      <a href="/index.html">الرئيسية</a>
+      <a href="account.html">الحساب</a>
+      <a href="#">الطلبات</a>
+      <div id="count">
+        🛒 <span id="counter">0</span>
+        <a href="chart.html">السلة</a>
+      </div>
     </div>
-</header>
+  </header>
 
-<!-- ======= الأقسام ======= -->
-<nav class="nav-bar">
-    <a href=" offers.html" class="active">العروض</a>
-    <a href=" electronics.html">الإلكترونيات</a>
-    <a href=" mobiles.html">الموبايلات</a>
-    <a href=" fashion.html">الموضة</a>
-    <a href=" home.html">الأجهزة المنزلية</a>
-    <a href=" food.html">الأكل</a>
+  <!-- ✅ الأقسام -->
+  <nav class="nav-bar">
+    <a href="offers.html" class="active">العروض</a>
+    <a href="electronics.html" >الإلكترونيات</a>
+    <a href="mobiles.html">الموبايلات</a>
+    <a href="fashion.html">الموضة</a>
+    <a href="home.html">الأجهزة المنزلية</a>
+    <a href="food.html">الأكل</a>
     <a href="#">المزيد</a>
-</nav>
+  </nav>
 
 <!-- ======= بانر ======= -->
 <section class="hero">
@@ -148,8 +148,7 @@
 
 <!-- ======= المنتجات ديناميكياً ======= -->
 <section class="home-products" id="productsContainer">
-    <p style="text-align:center; color:#aaa;">جارٍ تحميل العروض...</p>
-</section>
+    <!-- سيتم ملء هذا القسم ديناميكياً عبر جافاسكريبت -->    
 
 <!-- ======= الفوتر ======= -->
 <footer>
@@ -195,56 +194,9 @@
 </footer>
 
 <!-- ======= سكربت عرض العروض ======= -->
-<script>
-const container = document.getElementById("productsContainer");
-const products = JSON.parse(localStorage.getItem("products")) || [];
-
-function displayOffers() {
-  container.innerHTML = "";
-
-  const offerProducts = products.filter(p => p.isOffer || p.discount);
-
-  if (offerProducts.length === 0) {
-    container.innerHTML = "<p style='text-align:center; color:#ccc;'>لا توجد عروض حالياً.</p>";
-    return;
-  }
-
-  const sectionDiv = document.createElement("div");
-  sectionDiv.classList.add("section-block");
-  sectionDiv.innerHTML = `
-    <div class="section-header">
-      <h2>العروض</h2>
-    </div>
-    <div class="product-list"></div>
-  `;
-
-  const list = sectionDiv.querySelector(".product-list");
-
-  offerProducts.forEach(p => {
-    const card = document.createElement("div");
-    card.classList.add("product-card");
-    card.innerHTML = `
-      <img src="${p.image}" alt="${p.name}">
-      <h4>${p.name}</h4>
-      <p>السعر: ${p.price} جنيه</p>
-    `;
-    if (p.isOffer || p.discount) {
-      const badge = document.createElement("div");
-      badge.classList.add("offer-badge");
-      badge.textContent = "عرض!";
-      card.appendChild(badge);
-    }
-    list.appendChild(card);
-  });
-
-  container.appendChild(sectionDiv);
-}
-
-displayOffers();
-</script>
+<script src="/assets/js/products.js"></script>
 
 </body>
 </html>
- 
 
 

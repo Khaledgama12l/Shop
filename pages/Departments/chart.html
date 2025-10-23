@@ -1,109 +1,198 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سلة التسوق - Dark shop</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
-    <style>
-        /* CSS خاص بالسلة */
-        .cart-container {
-            max-width: 1000px;
-            margin: 40px auto;
-            padding: 20px;
-            background-color: rgb(70, 70, 194);
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سلة التسوق - Dark Shop</title>
+<link rel="stylesheet" href="/assets/css/style.css">
+<style>
+/* ====== إعدادات عامة ====== */
+body {
+    margin: 0;
+    font-family: 'Cairo', Arial, sans-serif;
+    background-color: #0a0a0a;
+    color: #fff;
+}
+a { text-decoration: none; color: inherit; }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+/* ====== الهيدر ====== */
+.top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #111;
+    padding: 10px 30px;
+    border-bottom: 1px solid #222;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
 
-        th, td {
-            padding: 12px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-        }
+.logo { font-size: 26px; font-weight: bold; color: #00BFFF; }
 
-        th {
-            background-color: blue;
-        }
+.search-bar {
+    display: flex;
+    flex: 1;
+    max-width: 500px;
+    margin: 0 20px;
+}
+.search-bar input {
+    flex: 1;
+    padding: 8px;
+    border-radius: 4px 0 0 4px;
+    border: none;
+    outline: none;
+}
+.search-bar button {
+    padding: 8px 12px;
+    border-radius: 0 4px 4px 0;
+    border: none;
+    background-color: #00BFFF;
+    color: #fff;
+    cursor: pointer;
+}
+.search-bar button:hover { background-color: #009ACD; }
 
-        img {
-            border-radius: 8px;
-        }
+.header-icons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+#count {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+#counter {
+    position: absolute;
+    top: -10px;
+    right: 0;
+    background-color: #ff3b3b;
+    color: #fff;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-        input.quantity-input {
-            width: 60px;
-            padding: 5px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            text-align: center;
-        }
+/* ====== عنوان الصفحة ====== */
+.cart-hero {
+    text-align: center;
+    padding: 30px 20px;
+}
+.cart-hero h1 { color: #00BFFF; margin-bottom: 10px; }
+.cart-hero p { color: #ccc; }
 
-        button {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 8px;
-            background-color: #2c3e50;
-            color: #fff;
-            cursor: pointer;
-        }
+/* ====== سلة التسوق ====== */
+.cart-container {
+    max-width: 1000px;
+    margin: 20px auto 50px;
+    padding: 20px;
+    background-color: #111;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
 
-        button:hover {
-            background-color: #34495e;
-        }
+.cart-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.cart-container th, .cart-container td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #222;
+}
+.cart-container th {
+    background-color: #00BFFF;
+    color: #fff;
+    font-weight: bold;
+}
+.cart-container td img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+.cart-container input.quantity-input {
+    width: 50px;
+    padding: 5px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    text-align: center;
+    background-color: #222;
+    color: #fff;
+}
 
-        .cart-summary {
-            margin-top: 20px;
-            text-align: right;
-            font-size: 18px;
-        }
+.cart-container button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    background-color: #ff3b3b;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.cart-container button:hover { background-color: #e03232; }
 
-        .cart-summary h3 {
-            margin-bottom: 10px;
-        }
+/* ====== ملخص السلة ====== */
+.cart-summary {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.cart-summary h3 { margin: 0; }
+#checkout-btn {
+    background-color: #27ae60;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #fff;
+    transition: 0.2s;
+}
+#checkout-btn:hover { background-color: #2ecc71; }
 
-        #checkout-btn {
-            background-color: #27ae60;
-        }
+/* ====== الفوتر ====== */
+footer {
+    background-color: #111;
+    color: #ccc;
+    padding: 20px;
+    text-align: center;
+}
+footer a { color: #00BFFF; }
+footer a:hover { text-decoration: underline; }
 
-        #checkout-btn:hover {
-            background-color: #2ecc71;
-        }
-
-        .cart-hero {
-            text-align: center;
-            margin-top: 30px;
-            margin-bottom: 20px;
-        }
-    </style>
+/* ====== Responsive ====== */
+@media screen and (max-width: 768px) {
+    .cart-container table, .cart-container th, .cart-container td { font-size: 14px; }
+    .search-bar { max-width: 200px; }
+}
+</style>
 </head>
 <body>
 
 <!-- الهيدر -->
 <header class="top-header">
-    <div class="logo">Dark shop</div>
+   <div class="logo">Dark shop</div>
     <a href="/index.html" class="home"></a>
-    <div class="addProduct">
-            <a href="/addProduct.html">إضافة منتج 🛠️</a>
-    </div>
     <div class="search-bar">
         <input type="text" placeholder="ابحث عن منتجات، علامات تجارية والمزيد...">
         <button>بحث</button>
     </div>
-
     <div class="header-icons">
         <a href="/index.html">الرئيسية</a>
-        <a href="/account.html">الحساب</a>
+        <a href="#">الحساب</a>
         <a href="#">الطلبات</a>
 
-        <!-- ✅ خلى العداد داخل عنصر منفصل -->
         <div id="count">
             🛒 <span id="counter">0</span>
-            <a href="/chart.html">السلة</a>
+            <a href="/cart.html">السلة</a>
         </div>
     </div>
 </header>
@@ -111,12 +200,12 @@
 <!-- عنوان الصفحة -->
 <section class="cart-hero">
     <h1>سلة التسوق الخاصة بك</h1>
-    <p>تأكد من منتجاتك قبل إتمام الطلب</p>
+    <p>راجع منتجاتك قبل إتمام الطلب</p>
 </section>
 
 <!-- سلة المنتجات -->
 <section class="cart-container">
-    <table id="cart-table">
+    <table>
         <thead>
             <tr>
                 <th>صورة المنتج</th>
@@ -127,9 +216,7 @@
                 <th>حذف</th>
             </tr>
         </thead>
-        <tbody id="cart-items">
-            <!-- سيتم إضافة المنتجات بالـJS -->
-        </tbody>
+        <tbody id="cart-items"></tbody>
     </table>
 
     <div class="cart-summary">
@@ -138,42 +225,14 @@
     </div>
 </section>
 
-<!-- فوتر -->
+<!-- الفوتر -->
 <footer>
-    <div class="footer-top">
-        <div class="footer-section">
-            <h4>عن Dark shop</h4>
-            <a href="#">من نحن</a>
-            <a href="#">انضم إلينا</a>
-            <a href="#">المدونة</a>
-            <a href="#">تواصل معنا</a>
-        </div>
-        <div class="footer-section">
-            <h4>خدمة العملاء</h4>
-            <a href="#">مساعدة</a>
-            <a href="#">الأسئلة الشائعة</a>
-            <a href="#">سياسة الإرجاع</a>
-            <a href="#">طرق الدفع</a>
-        </div>
-        <div class="footer-section">
-            <h4>حسابك</h4>
-            <a href="#">تسجيل الدخول</a>
-            <a href="#">طلباتي</a>
-            <a href="#">المفضلة</a>
-            <a href="#">العناوين</a>
-        </div>
-        <div class="footer-section">
-            <h4>سياسات</h4>
-            <a href="#">الشروط والأحكام</a>
-            <a href="#">سياسة الخصوصية</a>
-            <a href="#">الأمان والبيانات</a>
-        </div>
-    </div>
+    <p>© 2025 Dark Shop - جميع الحقوق محفوظة</p>
 </footer>
 
 <script>
+// ====== جافا سكريبت سلة التسوق ======
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
 const cartItemsContainer = document.getElementById('cart-items');
 const cartTotal = document.getElementById('cart-total');
 const counter = document.getElementById('counter');
@@ -186,18 +245,16 @@ function renderCart() {
         const itemTotal = item.price * item.quantity;
         total += itemTotal;
 
-        cartItemsContainer.innerHTML += `
-            <tr>
-                <td><img src="${item.image}" alt="${item.name}" width="50"></td>
-                <td>${item.name}</td>
-                <td>${item.price}</td>
-                <td>
-                    <input type="number" min="1" value="${item.quantity}" data-index="${index}" class="quantity-input">
-                </td>
-                <td>${itemTotal}</td>
-                <td><button data-index="${index}" class="remove-btn">حذف</button></td>
-            </tr>
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><img src="${item.image}" alt="${item.name}"></td>
+            <td>${item.name}</td>
+            <td>${item.price}</td>
+            <td><input type="number" min="1" value="${item.quantity}" data-index="${index}" class="quantity-input"></td>
+            <td>${itemTotal}</td>
+            <td><button data-index="${index}" class="remove-btn">حذف</button></td>
         `;
+        cartItemsContainer.appendChild(tr);
     });
 
     cartTotal.textContent = total;
@@ -207,7 +264,7 @@ function renderCart() {
 
 function attachEvents() {
     document.querySelectorAll('.remove-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+        btn.addEventListener('click', e => {
             const index = e.target.dataset.index;
             cart.splice(index, 1);
             localStorage.setItem('cart', JSON.stringify(cart));
@@ -216,16 +273,17 @@ function attachEvents() {
     });
 
     document.querySelectorAll('.quantity-input').forEach(input => {
-        input.addEventListener('change', (e) => {
+        input.addEventListener('change', e => {
             const index = e.target.dataset.index;
-            cart[index].quantity = parseInt(e.target.value);
+            const value = parseInt(e.target.value);
+            cart[index].quantity = value > 0 ? value : 1;
             localStorage.setItem('cart', JSON.stringify(cart));
             renderCart();
         });
     });
 
     document.getElementById('checkout-btn').addEventListener('click', () => {
-        if(cart.length === 0){
+        if (cart.length === 0) {
             alert("السلة فارغة!");
             return;
         }
@@ -236,7 +294,9 @@ function attachEvents() {
     });
 }
 
+// تحميل الصفحة
 renderCart();
 </script>
+
 </body>
 </html>

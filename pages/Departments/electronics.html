@@ -40,6 +40,7 @@
     <a href="mobiles.html" >الموبايلات</a>
     <a href="fashion.html">الموضة</a>
     <a href="home.html">الأجهزة المنزلية</a>
+    <a href="food.html">الأكل</a>
     <a href="#">المزيد</a>
   </nav>
 
@@ -50,9 +51,8 @@
   </section>
 
   <!-- ✅ المنتجات -->
-  <section class="products" id="productsSection">
-    <p style="text-align:center; color:#aaa;">جارٍ تحميل المنتجات...</p>
-  </section>
+  <section id="productsSection" data-section="الإلكترونيات"></section>
+
 
   <!-- ✅ الفوتر -->
   <footer>
@@ -102,38 +102,9 @@
   </footer>
 
   <!-- ✅ سكربت عرض المنتجات -->
-  <script>
-  const productsSection = document.getElementById("productsSection");
-  const products = JSON.parse(localStorage.getItem("products")) || [];
+    <script src="/assets/js/products.js"></script>
+    <script src="assets/js/productsCart.js"></script>
 
-  function displayElectronics() {
-    productsSection.innerHTML = "";
-
-    // تصفية المنتجات حسب القسم "الإلكترونيات"
-    const electronics = products.filter(p => p.section === "الإلكترونيات");
-
-
-    if (electronics.length === 0) {
-      productsSection.innerHTML = "<p style='text-align:center; color:#ccc;'>لا توجد منتجات إلكترونية حالياً.</p>";
-      return;
-    }
-
-    electronics.forEach((p, index) => {
-      const card = document.createElement("div");
-      card.classList.add("product-card");
-      card.innerHTML = `
-        <img src="${p.image}" alt="${p.name}">
-        <h4>${p.name}</h4>
-        <p>السعر: ${p.price} جنيه</p>
-        <button class="buy" data-index="${index}">أضف إلى السلة 🛒</button>
-      `;
-      productsSection.appendChild(card);
-    });
-  }
-
-  displayElectronics();
-  </script>
-  <script src="/assets/js/chart.js"></script>
 
 </body>
 </html>

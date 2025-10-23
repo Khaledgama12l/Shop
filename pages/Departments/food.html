@@ -11,14 +11,14 @@
   <!-- ✅ الهيدر -->
   <header class="top-header">
     <div class="logo">Dark shop</div>
-    <a href="/index.html" class="home"></a>
+    <a href="index.html" class="home"></a>
 
     <div class="addProduct" id="addProductContainer" style="display:none;">
       <a href="/addProduct.html">إضافة منتج 🛠️</a>
     </div>
 
     <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="ابحث عن منتج في قسم الأكل...">
+      <input type="text" id="searchInput" placeholder="ابحث عن منتج في الإلكترونيات...">
       <button id="searchBtn">بحث</button>
     </div>
 
@@ -36,11 +36,12 @@
   <!-- ✅ الأقسام -->
   <nav class="nav-bar">
     <a href="offers.html">العروض</a>
-    <a href="electronics.html">الإلكترونيات</a>
+    <a href="electronics.html" >الإلكترونيات</a>
     <a href="mobiles.html">الموبايلات</a>
     <a href="fashion.html">الموضة</a>
     <a href="home.html">الأجهزة المنزلية</a>
     <a href="food.html" class="active">الأكل</a>
+    <a href="#">المزيد</a>
   </nav>
 
   <!-- ✅ عنوان القسم -->
@@ -50,9 +51,7 @@
   </section>
 
   <!-- ✅ المنتجات -->
-  <section class="products" id="productsSection">
-    <p style="text-align:center; color:#aaa;">جارٍ تحميل المنتجات...</p>
-  </section>
+    <section id="productsSection" data-section="الأكل بقا"></section>
 
   <!-- ✅ الفوتر -->
   <footer>
@@ -101,37 +100,8 @@
     </div>
   </footer>
 
-  <!-- ✅ سكربت عرض المنتجات الخاصة بقسم الأكل -->
-  <script>
-  const productsSection = document.getElementById("productsSection");
-  const products = JSON.parse(localStorage.getItem("products")) || [];
-
-  function displayFood() {
-    productsSection.innerHTML = "";
-
-    // ✅ تصفية المنتجات حسب القسم "الأكل"
-    const foodItems = products.filter(p => p.section === "الأكل بقا");
-
-    if (foodItems.length === 0) {
-      productsSection.innerHTML = "<p style='text-align:center; color:#ccc;'>لا توجد منتجات طعام حالياً.</p>";
-      return;
-    }
-
-    foodItems.forEach((p, index) => {
-      const card = document.createElement("div");
-      card.classList.add("product-card");
-      card.innerHTML = `
-        <img src="${p.image}" alt="${p.name}">
-        <h4>${p.name}</h4>
-        <p>السعر: ${p.price} جنيه</p>
-        <button class="buy" data-index="${index}">أضف إلى السلة 🛒</button>
-      `;
-      productsSection.appendChild(card);
-    });
-  }
-
-  displayFood();
-  </script>
+    <!-- ✅ سكربت عرض المنتجات الخاصة بقسم الأكل -->
+    <script src="/assets/js/products.js"></script>  
 
 </body>
 </html>

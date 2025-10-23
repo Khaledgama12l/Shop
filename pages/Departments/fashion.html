@@ -105,45 +105,48 @@
 </head>
 <body>
 
-<header class="top-header">
+  <header class="top-header">
     <div class="logo">Dark shop</div>
-    <a href="/index.html" class="home"></a>
-    <div class="addProduct" id="addProductContainer" style="display:none;">
-        <a href="/addProduct.html">إضافة منتج 🛠️</a>
-    </div>
-    <div class="search-bar">
-        <input type="text" placeholder="ابحث عن الموضة...">
-        <button>بحث</button>
-    </div>
-    <div class="header-icons">
-        <a href="/index.html">الرئيسية</a>
-        <a href="/account.html">الحساب</a>
-        <a href="#">الطلبات</a>
-        <div id="count">
-            🛒 <span id="counter">0</span>
-            <a href="chart.html">السلة</a>
-        </div>
-    </div>
-</header>
+    <a href="index.html" class="home"></a>
 
-<nav class="nav-bar">
-    <a href=" offers.html">العروض</a>
-    <a href=" electronics.html">الإلكترونيات</a>
-    <a href=" mobiles.html">الموبايلات</a>
-    <a href=" fashion.html" class="active">الموضة</a>
-    <a href=" home.html">الأجهزة المنزلية</a>
+    <div class="addProduct" id="addProductContainer" style="display:none;">
+      <a href="/addProduct.html">إضافة منتج 🛠️</a>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="ابحث عن منتج في الإلكترونيات...">
+      <button id="searchBtn">بحث</button>
+    </div>
+
+    <div class="header-icons">
+      <a href="/index.html">الرئيسية</a>
+      <a href="account.html">الحساب</a>
+      <a href="#">الطلبات</a>
+      <div id="count">
+        🛒 <span id="counter">0</span>
+        <a href="chart.html">السلة</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ✅ الأقسام -->
+  <nav class="nav-bar">
+    <a href="offers.html">العروض</a>
+    <a href="electronics.html" >الإلكترونيات</a>
+    <a href="mobiles.html" >الموبايلات</a>
+    <a href="fashion.html" class="active">الموضة</a>
+    <a href="home.html">الأجهزة المنزلية</a>
     <a href="food.html">الأكل</a>
     <a href="#">المزيد</a>
-</nav>
+  </nav>
 
 <section class="hero">
     <h1>أحدث صيحات الموضة</h1>
     <p>أزياء واكسسوارات بأفضل الأسعار</p>
 </section>
 
-<section class="home-products" id="productsContainer">
-    <p style="text-align:center; color:#aaa;">جارٍ تحميل منتجات الموضة...</p>
-</section>
+<!-- ======= منتجات الموضة ======= -->  
+<section id="productsSection" data-section="الموضة"></section>
 
 <footer>
     <div class="footer-top">
@@ -187,67 +190,7 @@
     </div>
 </footer>
 
-<script>
-const container = document.getElementById("productsContainer");
-const products = JSON.parse(localStorage.getItem("products")) || [];
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-function updateCartCounter() {
-    document.getElementById("counter").textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
-}
-
-function displayFashion() {
-    container.innerHTML = "";
-
-    const fashionProducts = products.filter(p => p.section === "الموضة" || p.section === "fashion");
-
-    if (fashionProducts.length === 0) {
-        container.innerHTML = "<p style='text-align:center; color:#ccc;'>لا توجد منتجات حالياً.</p>";
-        return;
-    }
-
-    const sectionDiv = document.createElement("div");
-    sectionDiv.classList.add("section-block");
-    sectionDiv.innerHTML = `
-        <div class="section-header">
-            <h2>الموضة</h2>
-        </div>
-        <div class="product-list"></div>
-    `;
-
-    const list = sectionDiv.querySelector(".product-list");
-
-    fashionProducts.forEach((p, index) => {
-        const card = document.createElement("div");
-        card.classList.add("product-card");
-        card.innerHTML = `
-            <img src="${p.image}" alt="${p.name}">
-            <h4>${p.name}</h4>
-            <p>السعر: ${p.price} جنيه</p>
-            <button class="buy" data-index="${index}">أضف إلى السلة 🛒</button>
-        `;
-        list.appendChild(card);
-    });
-
-    container.appendChild(sectionDiv);
-
-    // ربط أزرار الإضافة للسلة
-    document.querySelectorAll(".buy").forEach(btn => {
-        btn.addEventListener("click", e => {
-            const idx = parseInt(e.target.dataset.index);
-            const product = fashionProducts[idx];
-            const existing = cart.find(item => item.name === product.name && item.section === product.section);
-            if (existing) existing.quantity += 1;
-            else cart.push({...product, quantity: 1});
-            localStorage.setItem("cart", JSON.stringify(cart));
-            updateCartCounter();
-            alert(`✅ تم إضافة ${product.name} إلى السلة!`);
-        });
-    });
-}
-
-displayFashion();
-</script>
+<script src="/assets/js/products.js"></script>
 
 </body>
 </html>

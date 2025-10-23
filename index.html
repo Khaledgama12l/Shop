@@ -6,6 +6,7 @@
 <title>Dark Shop - الصفحة الرئيسية</title>
 <link rel="stylesheet" href="/assets/css/style.css">
 <style>
+    
     /* ======= سكشن المنتجات ======= */
     .section-block {
         margin: 40px auto;
@@ -184,64 +185,8 @@
 </footer>
 
 <!-- ======= سكربت عرض المنتجات ======= -->
-<script>
-const container = document.getElementById("productsContainer");
-const products = JSON.parse(localStorage.getItem("products")) || [];
-
-const sections = [
-  { name: "الإلكترونيات", link: "pages/Departments/electronics.html" },
-  { name: "الموبايلات", link: "pages/Departments/mobiles.html" },
-  { name: "الموضة", link: "pages/Departments/fashion.html" },
-  { name: "الأجهزة المنزلية", link: "pages/Departments/home.html" },
-  { name: "الأكل بقا", link: "pages/Departments/food.html" }
-];
-
-const MAX_PRODUCTS = 4; // عرض 4 كروت لكل سكشن
-
-function displayHomeProducts() {
-  container.innerHTML = "";
-
-  sections.forEach(section => {
-    const sectionProducts = products
-      .filter(p => p.section === section.name)
-      .slice(0, MAX_PRODUCTS);
-
-    if (sectionProducts.length === 0) return;
-
-    const sectionDiv = document.createElement("div");
-    sectionDiv.classList.add("section-block");
-
-    sectionDiv.innerHTML = `
-      <div class="section-header">
-        <h2>${section.name}</h2>
-        <a href="${section.link}" class="view-all">عرض الكل →</a>
-      </div>
-      <div class="product-list"></div>
-    `;
-
-    const list = sectionDiv.querySelector(".product-list");
-
-    sectionProducts.forEach(p => {
-      const card = document.createElement("div");
-      card.classList.add("product-card");
-      card.innerHTML = `
-        <img src="${p.image}" alt="${p.name}">
-        <h4>${p.name}</h4>
-        <p>السعر: ${p.price} جنيه</p>
-      `;
-      list.appendChild(card);
-    });
-
-    container.appendChild(sectionDiv);
-  });
-
-  if (container.innerHTML.trim() === "") {
-    container.innerHTML = "<p style='text-align:center; color:#ccc;'>لا توجد منتجات بعد.</p>";
-  }
-}
-
-displayHomeProducts();
-</script>
+<script src="assets/js/homeProductDisplay.js"></script>
+<script src="assets/js/chart.js"></script>
 
 </body>
 </html>
