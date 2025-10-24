@@ -46,6 +46,11 @@ const headerHTML = `
 </nav>
 
 `;
+     // أضف مكتبة Supabase قبل أي سكريبتات أخرى في الصفحة
+  const supabaseScript = document.createElement("script");
+  supabaseScript.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js";
+  supabaseScript.type = "text/javascript";
+  document.body.appendChild(supabaseScript);
 
 document.addEventListener("DOMContentLoaded", () => {
     // ===== إدخال الهيدر والـnav =====
@@ -126,7 +131,7 @@ document.addEventListener('click', () => {
 
 
 
- 
+    
 
 // ===== Footer HTML =====
 const footerHTML = `
