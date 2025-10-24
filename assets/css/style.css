@@ -549,7 +549,7 @@ footer a:hover { text-decoration: underline; }
 
 
 .dropdown-content {
-    display: none; /* مبدئياً مش ظاهر */
+    display: none;
     flex-direction: column;
     position: absolute;
     background-color: #111;
@@ -558,18 +558,17 @@ footer a:hover { text-decoration: underline; }
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.4);
     overflow: hidden;
-    z-index: 10;
-    transform-origin: top;
-    transition: transform 0.25s ease, opacity 0.25s ease;
     opacity: 0;
-    transform: scaleY(0);
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 10;
 }
 
-/* عند الفتح */
+/* ===== عند الفتح ===== */
 .dropdown.open .dropdown-content {
     display: flex;
     opacity: 1;
-    transform: scaleY(1);
+    transform: translateY(0);
 }
 
 .dropdown-content a {
