@@ -36,110 +36,111 @@ button.logout { background:red; }
     </div>
 </div>
 
-<!-- Supabase CDN -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script>
 const supabaseClient = supabase.createClient(
-  'https://uhlo0cami2znerc9bjgxifuc.supabase.co', // استبدل برابط مشروعك
-  'YOUR_ANON_KEY' // استبدل بالمفتاح العام
+  'https://uhlo0cami2znerc9bjgxifuc.supabase.co', // رابط مشروعك
+  'YOUR_ANON_KEY' // المفتاح العام
 );
 
-document.addEventListener("DOMContentLoaded", async () => {
-    const usernameInput = document.getElementById("username");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
-    const saveBtn = document.getElementById("saveData");
-    const logoutBtn = document.getElementById("logoutBtn");
-    const addProductContainer = document.getElementById("addProductContainer");
+const usernameInput = document.getElementById("username");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const saveBtn = document.getElementById("saveData");
+const logoutBtn = document.getElementById("logoutBtn");
+const addProductContainer = document.getElementById("addProductContainer");
 
-    // ===== تحقق من الجلسة الحالية =====
-    const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
-    if(sessionError || !session) {
-        window.location.href = "login.html";
-        return;
-    }
-    const user = session.user;
-
-    // جلب بيانات profile
-    const { data: profile, error: profileError } = await supabaseClient
+// دالة لتحميل بيانات المستخدم
+async function loadUserData(userId){
+    const { data: profile, error } = await supabaseClient
         .from("profiles")
         .select("*")
-        .eq("id", user.id)
+        .eq("id", userId)
         .single();
 
-    if(profileError){
-        console.error(profileError.message);
+    if(error){
+        console.error(error.message);
         alert("❌ حدث خطأ أثناء جلب بياناتك.");
         return;
     }
 
-    // ملء الحقول
     usernameInput.value = profile.username || "";
-    emailInput.value = user.email;
+    emailInput.value = profile.email || "";
     const role = profile.role || "user";
-
-    // عرض زر الادمن
     if(role === "admin"){
         addProductContainer.style.display = "block";
     }
+}
 
-    // ===== حفظ البيانات =====
-    saveBtn.addEventListener("click", async () => {
-        const newName = usernameInput.value.trim();
-        const newPassword = passwordInput.value.trim();
-
-        if(!newName){
-            alert("❌ يرجى كتابة الاسم!");
-            return;
-        }
-
-        // تحديث profile
-        const { error: updateProfileError } = await supabaseClient
-            .from("profiles")
-            .update({ username: newName })
-            .eq("id", user.id);
-
-        if(updateProfileError){
-            alert("❌ فشل في تحديث الاسم: " + updateProfileError.message);
-            return;
-        }
-
-        // تحديث كلمة المرور إذا تم كتابتها
-        if(newPassword){
-            const { error: updatePassError } = await supabaseClient.auth.updateUser({ password: newPassword });
-            if(updatePassError){
-                alert("❌ فشل في تحديث كلمة المرور: " + updatePassError.message);
-                return;
-            }
-        }
-
-        alert("✅ تم تحديث البيانات بنجاح!");
-        passwordInput.value = "";
-    });
-
-    // ===== تسجيل الخروج =====
-    logoutBtn.addEventListener("click", async () => {
-        await supabaseClient.auth.signOut();
+// الاستماع لتغيير حالة الجلسة
+supabaseClient.auth.onAuthStateChange((event, session) => {
+    if(!session){
         window.location.href = "login.html";
-    });
+    } else {
+        loadUserData(session.user.id);
+    }
+});
 
-    // ===== زر إضافة منتج للادمن =====
-    const addProductBtn = document.getElementById("addProductBtn");
-    if(addProductBtn){
-        addProductBtn.addEventListener("click", () => {
-            alert("هنا يمكن إضافة المنتج (خاص بالادمن)");
-        });
+// التحقق من الجلسة عند تحميل الصفحة
+(async () => {
+    const { data: { session }, error } = await supabaseClient.auth.getSession();
+    if(!session){
+        window.location.href = "login.html";
+        return;
+    }
+    loadUserData(session.user.id);
+})();
+
+// حفظ البيانات
+saveBtn.addEventListener("click", async () => {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if(!session) return;
+    const user = session.user;
+
+    const newName = usernameInput.value.trim();
+    const newPassword = passwordInput.value.trim();
+
+    if(!newName){
+        alert("❌ يرجى كتابة الاسم!");
+        return;
     }
 
-    // ===== الاستماع لتغيير الجلسة =====
-    supabaseClient.auth.onAuthStateChange((event, session) => {
-        if(!session){
-            window.location.href = "login.html";
+    // تحديث الاسم
+    const { error: updateProfileError } = await supabaseClient
+        .from("profiles")
+        .update({ username: newName })
+        .eq("id", user.id);
+    if(updateProfileError){
+        alert("❌ فشل في تحديث الاسم: " + updateProfileError.message);
+        return;
+    }
+
+    // تحديث كلمة المرور إذا تم كتابتها
+    if(newPassword){
+        const { error: updatePassError } = await supabaseClient.auth.updateUser({ password: newPassword });
+        if(updatePassError){
+            alert("❌ فشل في تحديث كلمة المرور: " + updatePassError.message);
+            return;
         }
-    });
+    }
 
+    alert("✅ تم تحديث البيانات بنجاح!");
+    passwordInput.value = "";
 });
-</script>
 
+// تسجيل الخروج
+logoutBtn.addEventListener("click", async () => {
+    await supabaseClient.auth.signOut();
+    window.location.href = "login.html";
+});
+
+// زر إضافة منتج للادمن
+const addProductBtn = document.getElementById("addProductBtn");
+if(addProductBtn){
+    addProductBtn.addEventListener("click", () => {
+        alert("هنا يمكن إضافة المنتج (خاص بالادمن)");
+    });
+}
+</script>
 </body>
 </html>
