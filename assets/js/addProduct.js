@@ -350,161 +350,95 @@
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV3bG9tYXp6bmNyZWpiZ3hpZnVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEzMDMwODYsImV4cCI6MjA3Njg3OTA4Nn0.2imMbjsn-7mHd28HvPTJk9BGEu04JqfcESDNoBV-pSM'
 );
 
+
   const productForm = document.getElementById("productForm");
   const productsList = document.getElementById("productsList");
 
-  let products = [];
-
   // جلب المنتجات
   async function fetchProducts() {
-    const { data, error } = await supabaseClient
-      .from('products')
-      .select('*');
-
+    const { data, error } = await supabase.from("products").select("*");
     if (error) {
       console.error("❌ خطأ في جلب المنتجات:", error.message);
-      productsList.innerHTML = "<p style='text-align:center;color:#aaa'>حدث خطأ في تحميل المنتجات.</p>";
+      productsList.innerHTML = "<p>حدث خطأ في تحميل المنتجات.</p>";
       return;
     }
-
-    products = data;
-    displayProducts();
+    displayProducts(data);
   }
 
   // عرض المنتجات
-  function displayProducts() {
+  function displayProducts(products) {
     productsList.innerHTML = "";
-
-    if (products.length === 0) {
-      productsList.innerHTML = "<p style='text-align:center;color:#aaa'>لا توجد منتجات بعد.</p>";
+    if (!products || products.length === 0) {
+      productsList.innerHTML = "<p>لا توجد منتجات بعد.</p>";
       return;
     }
-
     products.forEach(p => {
-      const card = document.createElement('div');
-      card.className = 'product-card';
+      const card = document.createElement("div");
+      card.className = "product-card";
       card.innerHTML = `
-        <img src="${p.image_url || 'https://via.placeholder.com/180x120'}" alt="${p.name}">
-        <input type="text" class="edit-name" value="${p.name}">
-        <input type="text" class="edit-description" value="${p.description}">
-        <input type="number" class="edit-price" value="${p.price}">
-        <select class="edit-section">
-          <option value="الإلكترونيات" ${p.section==="الإلكترونيات"?"selected":""}>الإلكترونيات</option>
-          <option value="الموبايلات" ${p.section==="الموبايلات"?"selected":""}>الموبايلات</option>
-          <option value="الموضة" ${p.section==="الموضة"?"selected":""}>الموضة</option>
-          <option value="الأجهزة المنزلية" ${p.section==="الأجهزة المنزلية"?"selected":""}>الأجهزة المنزلية</option>
-          <option value="الأكل بقا" ${p.section==="الأكل بقا"?"selected":""}>الأكل بقا</option>
-          <option value="العروض" ${p.section==="العروض"?"selected":""}>العروض</option>
-        </select>
-        <div style="margin-top:8px; display:flex; justify-content:center; gap:6px;">
-          <button class="save" data-id="${p.id}">💾 حفظ</button>
-          <button class="delete" data-id="${p.id}">❌ حذف</button>
-        </div>
+        <img src="${p.image_url || "https://via.placeholder.com/180x120"}" alt="${p.name}">
+        <h3>${p.name}</h3>
+        <p>${p.description}</p>
+        <strong>${p.price} ج.م</strong>
       `;
       productsList.appendChild(card);
     });
   }
 
   // إضافة منتج جديد
-  productForm.addEventListener('submit', async e => {
+  productForm.addEventListener("submit", async e => {
     e.preventDefault();
 
-    const name = document.getElementById('name').value.trim();
-    const description = document.getElementById('description').value.trim();
-    const price = document.getElementById('price').value.trim();
-    const imageInput = document.getElementById('image');
-    const section = document.getElementById('section').value;
+    const name = document.getElementById("name").value.trim();
+    const description = document.getElementById("description").value.trim();
+    const price = document.getElementById("price").value.trim();
+    const section = document.getElementById("section").value;
+    const imageInput = document.getElementById("image");
 
     if (!name || !description || !price || !section) {
-      alert('❌ يرجى ملء جميع الحقول!');
+      alert("❌ يرجى ملء جميع الحقول!");
       return;
     }
 
     let imageUrl = "";
 
-    // رفع الصورة إذا تم اختيارها
+    // رفع الصورة
     if (imageInput.files.length > 0) {
       const file = imageInput.files[0];
-      const fileName = `products/${Date.now()}_${file.name.replace(/\s/g,'_')}`;
+      const safeName = file.name.replace(/\s/g, "_");
+      const fileName = `products/${Date.now()}_${safeName}`;
 
-      const { data: imageData, error: imageError } = await supabaseClient.storage
-        .from('product-images')
+      const { data: imageData, error: imageError } = await supabase
+        .storage
+        .from("product-images")
         .upload(fileName, file, { upsert: true });
 
       if (imageError) {
-        alert('❌ خطأ في رفع الصورة!');
-        console.error(imageError.message);
+        console.error("❌ خطأ في رفع الصورة:", imageError.message);
+        alert("❌ فشل رفع الصورة: " + imageError.message);
         return;
       }
 
-      if (imageData) {
-        const { data: publicUrlData } = supabaseClient.storage
-          .from('product-images')
-          .getPublicUrl(fileName);
+      const { data: publicUrlData } = supabase
+        .storage
+        .from("product-images")
+        .getPublicUrl(fileName);
 
-        imageUrl = publicUrlData.publicUrl;
-      }
+      imageUrl = publicUrlData.publicUrl;
     }
 
-    const { error } = await supabaseClient
-      .from('products')
-      .insert([{ name, description, price, section, image_url: imageUrl }]);
+    // حفظ المنتج
+    const { error } = await supabase.from("products").insert([
+      { name, description, price, section, image_url: imageUrl }
+    ]);
 
     if (error) {
-      alert('❌ خطأ في حفظ المنتج!');
-      console.error(error.message);
+      console.error("❌ خطأ في حفظ المنتج:", error.message);
+      alert("❌ فشل في حفظ المنتج!");
     } else {
-      alert('✅ تمت إضافة المنتج بنجاح!');
+      alert("✅ تمت إضافة المنتج بنجاح!");
       productForm.reset();
       fetchProducts();
-    }
-  });
-
-  // تعديل وحذف المنتجات
-  productsList.addEventListener('click', async e => {
-    const saveBtn = e.target.closest('.save');
-    const deleteBtn = e.target.closest('.delete');
-
-    if (saveBtn) {
-      const id = saveBtn.dataset.id; // لو الجدول عندك UUID سيبه كـ string
-      const card = saveBtn.closest('.product-card');
-      const newName = card.querySelector('.edit-name').value.trim();
-      const newDescription = card.querySelector('.edit-description').value.trim();
-      const newPrice = card.querySelector('.edit-price').value.trim();
-      const newSection = card.querySelector('.edit-section').value;
-
-      if (!newName || !newDescription || !newPrice || !newSection) {
-        return alert("❌ يرجى ملء جميع الحقول!");
-      }
-
-      const { error } = await supabaseClient
-        .from('products')
-        .update({ name: newName, description: newDescription, price: newPrice, section: newSection })
-        .eq('id', id);
-
-      if (error) {
-        alert("❌ فشل في حفظ التعديلات.");
-        console.error(error.message);
-      } else {
-        alert("✅ تم حفظ التعديلات.");
-        fetchProducts();
-      }
-    }
-
-    if (deleteBtn) {
-      const id = deleteBtn.dataset.id;
-      const { error } = await supabaseClient
-        .from('products')
-        .delete()
-        .eq('id', id);
-
-      if (error) {
-        alert("❌ فشل في حذف المنتج.");
-        console.error(error.message);
-      } else {
-        alert("✅ تم حذف المنتج.");
-        fetchProducts();
-      }
     }
   });
 
