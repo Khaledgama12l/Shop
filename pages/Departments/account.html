@@ -54,8 +54,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // ===== تحقق من الجلسة الحالية =====
     const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
-    if (sessionError || !session) {
-        alert("❌ يرجى تسجيل الدخول أولًا!");
+    if(sessionError || !session) {
         window.location.href = "login.html";
         return;
     }
@@ -68,7 +67,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         .eq("id", user.id)
         .single();
 
-    if (profileError) {
+    if(profileError){
         console.error(profileError.message);
         alert("❌ حدث خطأ أثناء جلب بياناتك.");
         return;
