@@ -519,7 +519,6 @@ footer a:hover { text-decoration: underline; }
 }
 
 .dropdown-content a:hover {
-    background-color: #00BFFF;
     color: #fff;
 }
 
@@ -527,6 +526,138 @@ footer a:hover { text-decoration: underline; }
 .dropdown:hover .dropdown-content {
     display: block;
 }
+
+
+
+
+/* ===== القائمة المنسدلة ===== */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropbtn {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 10px 12px;
+    border-radius: 6px;
+    transition: 0.3s;
+    font-family: 'Cairo', sans-serif;
+}
+
+
+.dropdown-content {
+    display: none; /* مبدئياً مش ظاهر */
+    flex-direction: column;
+    position: absolute;
+    background-color: #111;
+    min-width: 160px;
+    border: 1px solid #222;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    overflow: hidden;
+    z-index: 10;
+    transform-origin: top;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+    opacity: 0;
+    transform: scaleY(0);
+}
+
+/* عند الفتح */
+.dropdown.open .dropdown-content {
+    display: flex;
+    opacity: 1;
+    transform: scaleY(1);
+}
+
+.dropdown-content a {
+    color: #ccc;
+    padding: 10px 15px;
+    text-align: right;
+    display: block;
+    transition: 0.2s;
+}
+
+.dropdown-content a:hover {
+    color: #fff;
+}
+
+/* للجوال */
+@media (max-width: 768px) {
+    .dropdown-content {
+        position: static;
+        width: 100%;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* للجوال: القائمة تظهر عند الضغط */
 @media (max-width: 768px) {
@@ -541,4 +672,132 @@ footer a:hover { text-decoration: underline; }
     .dropdown.open .dropdown-content {
         display: flex;
     }
+}
+/* ====== 🌐 الميديا كويري (تصميم متجاوب) ====== */
+
+/* 🖥️ الشاشات الكبيرة (الديسكتوب) */
+@media (min-width: 1025px) {
+  .product-list {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .search-bar {
+    max-width: 600px;
+  }
+}
+
+/* 💻 التابلت (من 768px إلى 1024px) */
+@media (max-width: 1024px) and (min-width: 768px) {
+  .product-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .top-header {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .search-bar {
+    margin-top: 10px;
+    max-width: 80%;
+  }
+
+  .header-icons {
+    margin-top: 10px;
+  }
+
+  .nav-bar {
+    flex-wrap: wrap;
+  }
+}
+
+/* 📱 الموبايل (أقل من 768px) */
+@media (max-width: 768px) {
+  /* الهيدر */
+  .top-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .logo {
+    font-size: 22px;
+  }
+
+  .search-bar {
+    width: 100%;
+    margin: 0;
+  }
+
+  .header-icons {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  /* الأقسام */
+  .nav-bar {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .nav-bar a,
+  .nav-bar .dropbtn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    border-bottom: 1px solid #222;
+  }
+
+  /* المنتجات */
+  .product-list {
+    grid-template-columns: 1fr;
+  }
+
+  .product-card {
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  /* البانر */
+  .hero h1 {
+    font-size: 26px;
+  }
+  .hero p {
+    font-size: 14px;
+  }
+  .hero button {
+    padding: 10px 18px;
+  }
+
+  /* الفوتر */
+  .footer-top {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .social-links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+/* 📺 الموبايلات الصغيرة جدًا (أقل من 480px) */
+@media (max-width: 480px) {
+  .logo {
+    font-size: 20px;
+  }
+
+  .product-card img {
+    height: 130px;
+  }
+
+  .hero h1 {
+    font-size: 22px;
+  }
+
+  .search-bar input {
+    font-size: 12px;
+  }
 }

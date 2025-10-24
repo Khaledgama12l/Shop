@@ -15,10 +15,10 @@ const headerHTML = `
     
     <div class="header-icons">
         <a href="/index.html">الرئيسية</a>
-        <a href="/pages/departments/account.html">الحساب</a>
+        <a href="/pages/Departments/account.html">الحساب</a>
         <a href="/pages/Departments/orders.html">الطلبات</a>
         <div id="count">
-            🛒 <span id="counter">0</span>
+            <span id="counter">0</span>
             <a href="/pages/Departments/chart.html">السلة</a>
         </div>
     </div>
@@ -33,42 +33,51 @@ const headerHTML = `
     <a href="/pages/Departments/food.html">الأكل</a>
 
     <div class="dropdown">
-        <button class="dropbtn">المزيد </button>
+        <button class="dropbtn">المزيد ▾</button>
         <div class="dropdown-content">
-            <a href="pages/Departments/sports.html">الرياضة</a>
-            <a href="pages/Departments/games.html">الألعاب</a>
-            <a href="pages/Departments/kids.html">الأطفال</a>
-            <a href="pages/Departments/beauty.html">العناية الشخصية</a>
-            <a href="pages/Departments/books.html">الكتب</a>
-            <a href="pages/Departments/books.html">بنادول</a>
+            <a href="/pages/Departments/sports.html">الرياضة</a>
+            <a href="/pages/Departments/games.html">الألعاب</a>
+            <a href="/pages/Departments/kids.html">الأطفال</a>
+            <a href="/pages/Departments/beauty.html">العناية الشخصية</a>
+            <a href="/pages/Departments/books.html">الكتب</a>
+            <a href="#">بنادول</a>
         </div>
     </div>
 </nav>
 `;
 
-// ========== إدخال الهيدر والـnav ==========
 document.addEventListener("DOMContentLoaded", () => {
-    const headerEl = document.querySelector("header.top-header");
-    const navEl = document.querySelector("nav.nav-bar");
-
-    if (headerEl) headerEl.outerHTML = headerHTML; // استبدل العنصر بالكامل
-    if (navEl) navEl.outerHTML = ""; // نحذف القديم ثم نضيف الجديد بعده
+    // ===== إدخال الهيدر والـnav =====
+    const oldHeader = document.querySelector(".top-header");
+    const oldNav = document.querySelector(".nav-bar");
+    if (oldHeader) oldHeader.remove();
+    if (oldNav) oldNav.remove();
 
     document.body.insertAdjacentHTML("afterbegin", headerHTML);
 
-    // ===== تفعيل القائمة المنسدلة =====
+    // ===== القائمة المنسدلة =====
+    const dropdown = document.querySelector('.dropdown');
     const dropdownBtn = document.querySelector('.dropbtn');
-    if (dropdownBtn) {
-        dropdownBtn.addEventListener('click', () => {
-            document.querySelector('.dropdown').classList.toggle('open');
+
+    if (dropdownBtn && dropdown) {
+        dropdownBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('open');
+        });
+
+        // إغلاق عند الضغط خارجها
+        document.addEventListener('click', (e) => {
+            if (!dropdown.contains(e.target)) {
+                dropdown.classList.remove('open');
+            }
         });
     }
 
-    // ===== تفعيل البحث =====
+    // ===== البحث =====
     const searchBtn = document.getElementById("searchBtn");
     const searchInput = document.getElementById("searchInput");
 
-    if (searchBtn) {
+    if (searchBtn && searchInput) {
         searchBtn.addEventListener("click", () => {
             const query = searchInput.value.trim().toLowerCase();
             if (!query) {
@@ -77,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             let products = JSON.parse(localStorage.getItem("products")) || [];
-            const results = products.filter(p => p.name.toLowerCase().includes(query));
+            const results = products.filter(p => p.name?.toLowerCase().includes(query));
 
             localStorage.setItem("searchResults", JSON.stringify(results));
             window.location.href = "/search.html";
