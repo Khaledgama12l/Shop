@@ -201,6 +201,52 @@ async function loadUserData(userId){
     addProductContainer.style.display = "none";
   }
 }
+// العنصر الخاص بزر إضافة المنتج
+
+// تحميل بيانات المستخدم والتحقق من الدور
+async function loadUserData(userId){
+    // جلب بيانات البروفايل من جدول profiles
+    const { data: profile, error } = await supabaseClient
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
+    
+    if(error){
+        console.error(error.message);
+        alert("❌ حدث خطأ أثناء جلب بياناتك.");
+        return;
+    }
+
+    usernameInput.value = profile.username || "";
+
+    // إظهار زر إضافة منتج لو المستخدم Admin
+    if(profile.role === "admin"){
+        addProductContainer.style.display = "block";
+    } else {
+        addProductContainer.style.display = "none";
+    }
+}
+
+// عند تحميل الصفحة
+document.addEventListener("DOMContentLoaded", async ()=>{
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if(!session){
+        window.location.href = "login.html";
+        return;
+    }
+    const user = session.user;
+    await loadUserData(user.id);
+});
+
+// زر إضافة المنتج (لو موجود)
+if(addProductBtn){
+    addProductBtn.addEventListener("click", ()=>{
+        // هنا ممكن تحوّل لصفحة إضافة المنتج
+        window.location.href = "addProduct.html";
+    });
+}
+
 </script>
 </body>
 </html>
