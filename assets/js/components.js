@@ -50,9 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // ===== إضافة سكريبت Supabase في أول البدي =====
   const supabaseScript = document.createElement("script");
   supabaseScript.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js";
-  supabaseScript.type = "text/javascript";
-  supabaseScript.defer = true; // لضمان تحميل السكريبت بعد DOM
-  document.body.insertAdjacentElement("afterbegin", supabaseScript);
+
 
   // بعد تحميل السكريبت، ممكن تستخدم Supabase
   supabaseScript.onload = () => {
