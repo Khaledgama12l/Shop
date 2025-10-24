@@ -47,14 +47,21 @@ const headerHTML = `
 
 `;
 document.addEventListener("DOMContentLoaded", () => {
-  // ===== إضافة سكريبت Supabase في الهيد =====
+  // ===== إضافة سكريبت Supabase في أول البدي =====
   const supabaseScript = document.createElement("script");
   supabaseScript.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js";
   supabaseScript.type = "text/javascript";
-  supabaseScript.defer = true; // لتجنب المشاكل مع DOMContentLoaded
-  document.head.appendChild(supabaseScript);
+  supabaseScript.defer = true; // لضمان تحميل السكريبت بعد DOM
+  document.body.insertAdjacentElement("afterbegin", supabaseScript);
 
-  // بعد تحميل السكريبت، تقدر تستخدم Supabase في أي سكريبت آخر بعد DOMContentLoaded
+  // بعد تحميل السكريبت، ممكن تستخدم Supabase
+  supabaseScript.onload = () => {
+  const supabaseClient = supabase.createClient(
+  'https://uwlomazzncrejbgxifuc.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV3bG9tYXp6bmNyZWpiZ3hpZnVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEzMDMwODYsImV4cCI6MjA3Njg3OTA4Nn0.2imMbjsn-7mHd28HvPTJk9BGEu04JqfcESDNoBV-pSM'
+);
+    console.log("✅ Supabase جاهز للاستخدام!");
+  };
 });
 
 
