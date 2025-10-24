@@ -4,146 +4,133 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>حسابي - Dark Shop</title>
-<link rel="stylesheet" href="/assets/css/style.css">
-<link rel="stylesheet" href="/assets/css/account.css">
+<style>
+body { font-family:'Cairo',sans-serif; background:#000; color:#fff; display:flex; justify-content:center; align-items:center; min-height:100vh; margin:0; }
+.account-container { background:#111; padding:30px; border-radius:10px; width:350px; }
+.account-header { font-size:24px; margin-bottom:20px; text-align:center; }
+.account-section { margin-bottom:20px; }
+.account-section h3 { margin-bottom:10px; }
+input, button { width:100%; padding:10px; border-radius:6px; border:none; margin-bottom:10px; }
+button { background:#00BFFF; color:#fff; font-weight:bold; cursor:pointer; }
+button:hover { background:#009ACD; }
+button.logout { background:red; }
+#addProductContainer { display:none; margin-top:10px; }
+</style>
 </head>
 <body>
 
-<!-- ======== Header ======== -->
-
-
-<!-- ======== Account Container ======== -->
 <div class="account-container">
     <div class="account-header">حسابي</div>
 
     <div class="account-section">
         <h3>البيانات الشخصية</h3>
-        <label for="username">الاسم:</label>
-        <input type="text" id="username">
-        <label for="email">الإيميل:</label>
-        <input type="email" id="email">
-        <label for="password">كلمة المرور:</label>
-        <input type="password" id="password">
+        <input type="text" id="username" placeholder="الاسم">
+        <input type="email" id="email" placeholder="الإيميل" disabled>
+        <input type="password" id="password" placeholder="كلمة المرور">
         <button id="saveData">حفظ البيانات</button>
-        <button id="logoutBtn" style="background:red; margin-top:10px;">تسجيل خروج</button>
+        <button id="logoutBtn" class="logout">تسجيل خروج</button>
     </div>
 
-    <div class="account-section">
-        <h3>الطلبات السابقة</h3>
-        <div class="orders-list" id="ordersList">لا توجد طلبات بعد.</div>
+    <div id="addProductContainer">
+        <button id="addProductBtn">إضافة منتج جديد</button>
     </div>
 </div>
 
-<!-- ======== JS ======== -->
-<script src="/assets/js/components.js"></script>
+<!-- Supabase CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", () => {
+const supabaseClient = supabase.createClient(
+  'https://uhlo0cami2znerc9bjgxifuc.supabase.co', // استبدل برابط مشروعك
+  'YOUR_ANON_KEY' // استبدل بالمفتاح العام
+);
 
-    // ====== Dropdown Menu ======
-    const dropdowns = document.querySelectorAll('.dropdown');
-    dropdowns.forEach(dropdown => {
-        const btn = dropdown.querySelector('.dropbtn');
-        if(!btn) return;
+document.addEventListener("DOMContentLoaded", async () => {
+    const usernameInput = document.getElementById("username");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const saveBtn = document.getElementById("saveData");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const addProductContainer = document.getElementById("addProductContainer");
 
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation(); // منع انتشار الحدث
-            dropdown.classList.toggle('open');
-        });
-    });
-
-    // إغلاق جميع القوائم عند الضغط خارجها
-    document.addEventListener('click', () => {
-        dropdowns.forEach(drop => drop.classList.remove('open'));
-    });
-
-    // ====== User Data ======
-    const userData = JSON.parse(localStorage.getItem("user"));
-    if(!userData){
+    // الحصول على المستخدم الحالي
+    const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+    if (userError || !user) {
         alert("❌ يرجى تسجيل الدخول أولًا!");
         window.location.href = "login.html";
         return;
     }
 
-    const usernameInput = document.getElementById("username");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
+    // جلب بيانات profile
+    const { data: profile, error: profileError } = await supabaseClient
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
 
-    usernameInput.value = userData.name || "";
-    emailInput.value = userData.email || "";
-    passwordInput.value = userData.password || "";
+    if (profileError) {
+        console.error(profileError.message);
+        alert("❌ حدث خطأ أثناء جلب بياناتك.");
+        return;
+    }
 
-    // زر حفظ البيانات
-    const saveBtn = document.getElementById("saveData");
-    saveBtn.addEventListener("click", () => {
-        const name = usernameInput.value.trim();
-        const email = emailInput.value.trim();
-        const password = passwordInput.value.trim();
+    // ملء الحقول
+    usernameInput.value = profile.username || "";
+    emailInput.value = user.email;
+    const role = profile.role || "user";
 
-        if(!name || !email || !password){
-            alert("يرجى ملء جميع الحقول!");
+    // عرض زر الادمن
+    if(role === "admin"){
+        addProductContainer.style.display = "block";
+    }
+
+    // حفظ البيانات
+    saveBtn.addEventListener("click", async () => {
+        const newName = usernameInput.value.trim();
+        const newPassword = passwordInput.value.trim();
+
+        if(!newName){
+            alert("❌ يرجى كتابة الاسم!");
             return;
         }
 
-        const updatedUser = {
-            name, email, password,
-            role: userData.role || "user"
-        };
-        localStorage.setItem("user", JSON.stringify(updatedUser));
-        alert("✅ تم حفظ البيانات بنجاح!");
+        // تحديث profile
+        const { error: updateProfileError } = await supabaseClient
+            .from("profiles")
+            .update({ username: newName })
+            .eq("id", user.id);
+
+        if(updateProfileError){
+            alert("❌ فشل في تحديث الاسم: " + updateProfileError.message);
+            return;
+        }
+
+        // تحديث كلمة المرور إذا تم كتابتها
+        if(newPassword){
+            const { error: updatePassError } = await supabaseClient.auth.updateUser({ password: newPassword });
+            if(updatePassError){
+                alert("❌ فشل في تحديث كلمة المرور: " + updatePassError.message);
+                return;
+            }
+        }
+
+        alert("✅ تم تحديث البيانات بنجاح!");
+        passwordInput.value = "";
     });
 
-    // زر تسجيل الخروج
-    const logoutBtn = document.getElementById("logoutBtn");
-    logoutBtn.addEventListener("click", () => {
-        localStorage.removeItem("user");
-        alert("✅ تم تسجيل الخروج!");
+    // تسجيل الخروج
+    logoutBtn.addEventListener("click", async () => {
+        await supabaseClient.auth.signOut();
         window.location.href = "login.html";
     });
 
-    // ====== Orders List ======
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const ordersList = document.getElementById("ordersList");
-
-    function displayOrders() {
-        if(cart.length === 0){
-            ordersList.innerHTML = "لا توجد طلبات بعد.";
-            return;
-        }
-
-        ordersList.innerHTML = "";
-        cart.forEach((item, index) => {
-            const div = document.createElement("div");
-            div.innerHTML = `
-                <span>${item.name} - ${item.quantity} × ${item.price} جنيه</span>
-                <button data-index="${index}" class="deleteOrder">حذف</button>
-            `;
-            ordersList.appendChild(div);
-        });
-
-        // إضافة حدث حذف لكل زر
-        const deleteButtons = document.querySelectorAll(".deleteOrder");
-        deleteButtons.forEach(btn => {
-            btn.addEventListener("click", (e) => {
-                const i = e.target.dataset.index;
-                cart.splice(i, 1);
-                localStorage.setItem("cart", JSON.stringify(cart));
-                displayOrders();
-            });
+    // زر إضافة منتج (للاختبار فقط)
+    const addProductBtn = document.getElementById("addProductBtn");
+    if(addProductBtn){
+        addProductBtn.addEventListener("click", () => {
+            alert("هنا يمكن إضافة المنتج (خاص بالادمن)");
         });
     }
-
-    displayOrders();
-
-    // ====== Show Add Product Button for Admin ======
-    const addProductContainer = document.getElementById("addProductContainer");
-    if(userData.role === "admin"){
-        addProductContainer.style.display = "block";
-    } else {
-        addProductContainer.style.display = "none";
-    }
-
 });
-
 </script>
 
 </body>
