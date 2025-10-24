@@ -188,7 +188,7 @@ footer a:hover { text-decoration: underline; }
 
     data.forEach((order, index) => {
       const imageSrc = order.image_url || order.image || 'https://via.placeholder.com/60';
-      const price = Number(order.price_numeric);
+      const price = Number(order.price);
       const total = price * order.quantity;
 
       const tr = document.createElement('tr');
