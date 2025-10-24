@@ -268,7 +268,7 @@ productForm.addEventListener('submit', async e => {
     const fileName = `products/${Date.now()}_${file.name.replace(/\s/g,'_')}`;
 
     const { data: imageData, error: imageError } = await supabaseClient.storage
-      .from('product-images')
+      .from('images')
       .upload(fileName, file, { upsert: true }); // upsert يسمح بالكتابة على الملف إذا كان موجود
 
     if (imageError) {
@@ -278,7 +278,7 @@ productForm.addEventListener('submit', async e => {
     }
 
     imageUrl = supabaseClient.storage
-      .from('product-images')
+      .from('images')
       .getPublicUrl(imageData.path).publicUrl;
   }
 
