@@ -33,220 +33,128 @@
         <button id="addProductBtn">إضافة منتج جديد</button>
     </div>
 </div>
+
 <script src="/assets/js/components.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script>
-  const supabaseClient = supabase.createClient(
+const supabaseClient = supabase.createClient(
   'https://uwlomazzncrejbgxifuc.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV3bG9tYXp6bmNyZWpiZ3hpZnVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEzMDMwODYsImV4cCI6MjA3Njg3OTA4Nn0.2imMbjsn-7mHd28HvPTJk9BGEu04JqfcESDNoBV-pSM'
 );
-const usernameInput = document.getElementById("username");
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
-const saveBtn = document.getElementById("saveData");
-const logoutBtn = document.getElementById("logoutBtn");
-const ordersList = document.getElementById("ordersList");
-const addProductContainer = document.getElementById("addProductContainer");
-const addProductBtn = document.getElementById("addProductBtn");
 
-// انتظار الجلسة قبل أي شيء
-async function waitForSession(){
-    let session = null;
-    while(!session){
-        const { data } = await supabaseClient.auth.getSession();
-        session = data.session;
-        if(!session){
-            await new Promise(r => setTimeout(r, 100));
-        }
+document.addEventListener("DOMContentLoaded", async () => {
+    const usernameInput = document.getElementById("username");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const saveBtn = document.getElementById("saveData");
+    const logoutBtn = document.getElementById("logoutBtn");
+    const ordersList = document.getElementById("ordersList");
+    const addProductContainer = document.getElementById("addProductContainer");
+    const addProductBtn = document.getElementById("addProductBtn");
+
+    // جلب الجلسة
+    const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+    if(sessionError || !session){
+        window.location.href = "login.html";
+        return;
     }
-    return session.user;
-}
+    const userId = session.user.id;
 
-// تحميل بيانات المستخدم
-async function loadUserData(userId){
+    // جلب بيانات البروفايل
     const { data: profile, error } = await supabaseClient
         .from("profiles")
-        .select("*")
+        .select("username, role")
         .eq("id", userId)
         .single();
-    
     if(error){
-        console.error(error.message);
-        alert("❌ حدث خطأ أثناء جلب بياناتك.");
+        console.error("خطأ في جلب بيانات البروفايل:", error.message);
         return;
     }
 
     usernameInput.value = profile.username || "";
-    emailInput.value = profile.email || "";
+    emailInput.value = session.user.email || "";
+
+    // إظهار زر إضافة منتج فقط إذا الدور admin
     if(profile.role === "admin"){
         addProductContainer.style.display = "block";
+        addProductBtn.addEventListener("click", ()=>{
+            window.location.href = "addProduct.html";
+        });
     } else {
         addProductContainer.style.display = "none";
     }
-}
 
-// عرض الطلبات السابقة (من LocalStorage أو يمكن تعديلها لSupabase)
-function displayOrders(){
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    if(cart.length === 0){
-        ordersList.innerHTML = "لا توجد طلبات بعد.";
-        return;
-    }
-    ordersList.innerHTML = "";
-    cart.forEach((item, index)=>{
-        const div = document.createElement("div");
-        div.innerHTML = `<span>${item.name} - ${item.quantity} × ${item.price} جنيه</span>
-                         <button data-index="${index}" class="deleteOrder">حذف</button>`;
-        ordersList.appendChild(div);
-    });
-
-    document.querySelectorAll(".deleteOrder").forEach(btn=>{
-        btn.addEventListener("click", e=>{
-            const i = e.target.dataset.index;
-            cart.splice(i,1);
-            localStorage.setItem("cart", JSON.stringify(cart));
-            displayOrders();
-        });
-    });
-}
-
-// التنفيذ عند تحميل الصفحة
-document.addEventListener("DOMContentLoaded", async ()=>{
-    const user = await waitForSession();
-    loadUserData(user.id);
-    displayOrders();
-});
-
-// حفظ البيانات
-saveBtn.addEventListener("click", async ()=>{
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if(!session) return;
-    const user = session.user;
-    const newName = usernameInput.value.trim();
-    const newPassword = passwordInput.value.trim();
-    if(!newName){
-        alert("❌ يرجى كتابة الاسم!");
-        return;
-    }
-
-    // تحديث الاسم
-    const { error: profileError } = await supabaseClient
-        .from("profiles")
-        .update({ username: newName })
-        .eq("id", user.id);
-    if(profileError){
-        alert("❌ فشل في تحديث الاسم: "+profileError.message);
-        return;
-    }
-
-    // تحديث كلمة المرور إذا كتبت
-    if(newPassword){
-        const { error: passError } = await supabaseClient.auth.updateUser({ password: newPassword });
-        if(passError){
-            alert("❌ فشل في تحديث كلمة المرور: "+passError.message);
+    // عرض الطلبات السابقة من LocalStorage
+    function displayOrders(){
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        if(cart.length === 0){
+            ordersList.innerHTML = "لا توجد طلبات بعد.";
             return;
         }
+        ordersList.innerHTML = "";
+        cart.forEach((item, index)=>{
+            const div = document.createElement("div");
+            div.innerHTML = `<span>${item.name} - ${item.quantity} × ${item.price} جنيه</span>
+                             <button data-index="${index}" class="deleteOrder">حذف</button>`;
+            ordersList.appendChild(div);
+        });
+
+        document.querySelectorAll(".deleteOrder").forEach(btn=>{
+            btn.addEventListener("click", e=>{
+                const i = e.target.dataset.index;
+                cart.splice(i,1);
+                localStorage.setItem("cart", JSON.stringify(cart));
+                displayOrders();
+            });
+        });
     }
 
-    alert("✅ تم حفظ البيانات بنجاح!");
-    passwordInput.value = "";
-});
+    displayOrders();
 
-// تسجيل الخروج
-logoutBtn.addEventListener("click", async ()=>{
-    await supabaseClient.auth.signOut();
-    window.location.href = "login.html";
-});
+    // حفظ البيانات
+    saveBtn.addEventListener("click", async ()=>{
+        const newName = usernameInput.value.trim();
+        const newPassword = passwordInput.value.trim();
+        if(!newName){
+            alert("❌ يرجى كتابة الاسم!");
+            return;
+        }
 
-// زر إضافة منتج للادمن
-if(addProductBtn){
-    addProductBtn.addEventListener("click", ()=>{
-        alert("هنا يمكن إضافة المنتج (خاص بالادمن)");
+        const { error: profileError } = await supabaseClient
+            .from("profiles")
+            .update({ username: newName })
+            .eq("id", userId);
+        if(profileError){
+            alert("❌ فشل في تحديث الاسم: "+profileError.message);
+            return;
+        }
+
+        if(newPassword){
+            const { error: passError } = await supabaseClient.auth.updateUser({ password: newPassword });
+            if(passError){
+                alert("❌ فشل في تحديث كلمة المرور: "+passError.message);
+                return;
+            }
+        }
+
+        alert("✅ تم حفظ البيانات بنجاح!");
+        passwordInput.value = "";
     });
-}
 
-// مراقبة حالة الجلسة
-supabaseClient.auth.onAuthStateChange((event, session)=>{
-    if(!session){
+    // تسجيل الخروج
+    logoutBtn.addEventListener("click", async ()=>{
+        await supabaseClient.auth.signOut();
         window.location.href = "login.html";
-    }
-});
-
-// تحميل بيانات المستخدم
-async function loadUserData(userId){
-  // هات بيانات البروفايل من جدول profiles
-  const { data: profile, error } = await supabaseClient
-    .from("profiles")
-    .select("*")
-    .eq("id", userId)
-    .single();
-
-  if(error){
-    console.error(error.message);
-    alert("❌ حدث خطأ أثناء جلب بياناتك.");
-    return;
-  }
-
-  // عرض الاسم من جدول profiles
-  usernameInput.value = profile.username || "";
-
-  // هات الإيميل من الـ Auth (auth.users)
-  const { data: { session } } = await supabaseClient.auth.getSession();
-  emailInput.value = session?.user?.email || "";
-
-  // إظهار زر إضافة منتج لو المستخدم Admin
-  if(profile.role === "admin"){
-    addProductContainer.style.display = "block";
-  } else {
-    addProductContainer.style.display = "none";
-  }
-}
-// العنصر الخاص بزر إضافة المنتج
-
-// تحميل بيانات المستخدم والتحقق من الدور
-async function loadUserData(userId){
-    // جلب بيانات البروفايل من جدول profiles
-    const { data: profile, error } = await supabaseClient
-        .from("profiles")
-        .select("*")
-        .eq("id", userId)
-        .single();
-    
-    if(error){
-        console.error(error.message);
-        alert("❌ حدث خطأ أثناء جلب بياناتك.");
-        return;
-    }
-
-    usernameInput.value = profile.username || "";
-
-    // إظهار زر إضافة منتج لو المستخدم Admin
-    if(profile.role === "admin"){
-        addProductContainer.style.display = "block";
-    } else {
-        addProductContainer.style.display = "none";
-    }
-}
-
-// عند تحميل الصفحة
-document.addEventListener("DOMContentLoaded", async ()=>{
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if(!session){
-        window.location.href = "login.html";
-        return;
-    }
-    const user = session.user;
-    await loadUserData(user.id);
-});
-
-// زر إضافة المنتج (لو موجود)
-if(addProductBtn){
-    addProductBtn.addEventListener("click", ()=>{
-        // هنا ممكن تحوّل لصفحة إضافة المنتج
-        window.location.href = "addProduct.html";
     });
-}
 
+    // مراقبة حالة الجلسة
+    supabaseClient.auth.onAuthStateChange((event, session)=>{
+        if(!session){
+            window.location.href = "login.html";
+        }
+    });
+});
 </script>
+
 </body>
 </html>
