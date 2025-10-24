@@ -4,18 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>حسابي - Dark Shop</title>
-<style>
-body { font-family:'Cairo',sans-serif; background:#000; color:#fff; display:flex; justify-content:center; align-items:center; min-height:100vh; margin:0; }
-.account-container { background:#111; padding:30px; border-radius:10px; width:350px; }
-.account-header { font-size:24px; margin-bottom:20px; text-align:center; }
-.account-section { margin-bottom:20px; }
-.account-section h3 { margin-bottom:10px; }
-input, button { width:100%; padding:10px; border-radius:6px; border:none; margin-bottom:10px; }
-button { background:#00BFFF; color:#fff; font-weight:bold; cursor:pointer; }
-button:hover { background:#009ACD; }
-button.logout { background:red; }
-#addProductContainer { display:none; margin-top:10px; }
-</style>
+<link rel="stylesheet" href="/assets/css/style.css">
+<link rel="stylesheet" href="/assets/css/account.css">
 </head>
 <body>
 
@@ -24,23 +14,31 @@ button.logout { background:red; }
 
     <div class="account-section">
         <h3>البيانات الشخصية</h3>
-        <input type="text" id="username" placeholder="الاسم">
-        <input type="email" id="email" placeholder="الإيميل" disabled>
-        <input type="password" id="password" placeholder="كلمة المرور">
+        <label for="username">الاسم:</label>
+        <input type="text" id="username">
+        <label for="email">الإيميل:</label>
+        <input type="email" id="email" disabled>
+        <label for="password">كلمة المرور:</label>
+        <input type="password" id="password">
         <button id="saveData">حفظ البيانات</button>
-        <button id="logoutBtn" class="logout">تسجيل خروج</button>
+        <button id="logoutBtn" style="background:red; margin-top:10px;">تسجيل خروج</button>
     </div>
 
-    <div id="addProductContainer">
+    <div class="account-section">
+        <h3>الطلبات السابقة</h3>
+        <div class="orders-list" id="ordersList">لا توجد طلبات بعد.</div>
+    </div>
+
+    <div id="addProductContainer" style="display:none;">
         <button id="addProductBtn">إضافة منتج جديد</button>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script>
-  const supabaseClient = supabase.createClient(
+const supabaseClient = supabase.createClient(
   'https://uwlomazzncrejbgxifuc.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV3bG9tYXp6bmNyZWpiZ3hpZnVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEzMDMwODYsImV4cCI6MjA3Njg3OTA4Nn0.2imMbjsn-7mHd28HvPTJk9BGEu04JqfcESDNoBV-pSM'
+  'YOUR_ANON_KEY'
 );
 
 const usernameInput = document.getElementById("username");
@@ -48,16 +46,31 @@ const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 const saveBtn = document.getElementById("saveData");
 const logoutBtn = document.getElementById("logoutBtn");
+const ordersList = document.getElementById("ordersList");
 const addProductContainer = document.getElementById("addProductContainer");
+const addProductBtn = document.getElementById("addProductBtn");
 
-// دالة لتحميل بيانات المستخدم
+// انتظار الجلسة قبل أي شيء
+async function waitForSession(){
+    let session = null;
+    while(!session){
+        const { data } = await supabaseClient.auth.getSession();
+        session = data.session;
+        if(!session){
+            await new Promise(r => setTimeout(r, 100));
+        }
+    }
+    return session.user;
+}
+
+// تحميل بيانات المستخدم
 async function loadUserData(userId){
     const { data: profile, error } = await supabaseClient
         .from("profiles")
         .select("*")
         .eq("id", userId)
         .single();
-
+    
     if(error){
         console.error(error.message);
         alert("❌ حدث خطأ أثناء جلب بياناتك.");
@@ -66,81 +79,99 @@ async function loadUserData(userId){
 
     usernameInput.value = profile.username || "";
     emailInput.value = profile.email || "";
-    const role = profile.role || "user";
-    if(role === "admin"){
+    if(profile.role === "admin"){
         addProductContainer.style.display = "block";
+    } else {
+        addProductContainer.style.display = "none";
     }
 }
 
-// الاستماع لتغيير حالة الجلسة
-supabaseClient.auth.onAuthStateChange((event, session) => {
-    if(!session){
-        window.location.href = "login.html";
-    } else {
-        loadUserData(session.user.id);
-    }
-});
-
-// التحقق من الجلسة عند تحميل الصفحة
-(async () => {
-    const { data: { session }, error } = await supabaseClient.auth.getSession();
-    if(!session){
-        window.location.href = "login.html";
+// عرض الطلبات السابقة (من LocalStorage أو يمكن تعديلها لSupabase)
+function displayOrders(){
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    if(cart.length === 0){
+        ordersList.innerHTML = "لا توجد طلبات بعد.";
         return;
     }
-    loadUserData(session.user.id);
-})();
+    ordersList.innerHTML = "";
+    cart.forEach((item, index)=>{
+        const div = document.createElement("div");
+        div.innerHTML = `<span>${item.name} - ${item.quantity} × ${item.price} جنيه</span>
+                         <button data-index="${index}" class="deleteOrder">حذف</button>`;
+        ordersList.appendChild(div);
+    });
+
+    document.querySelectorAll(".deleteOrder").forEach(btn=>{
+        btn.addEventListener("click", e=>{
+            const i = e.target.dataset.index;
+            cart.splice(i,1);
+            localStorage.setItem("cart", JSON.stringify(cart));
+            displayOrders();
+        });
+    });
+}
+
+// التنفيذ عند تحميل الصفحة
+document.addEventListener("DOMContentLoaded", async ()=>{
+    const user = await waitForSession();
+    loadUserData(user.id);
+    displayOrders();
+});
 
 // حفظ البيانات
-saveBtn.addEventListener("click", async () => {
+saveBtn.addEventListener("click", async ()=>{
     const { data: { session } } = await supabaseClient.auth.getSession();
     if(!session) return;
     const user = session.user;
-
     const newName = usernameInput.value.trim();
     const newPassword = passwordInput.value.trim();
-
     if(!newName){
         alert("❌ يرجى كتابة الاسم!");
         return;
     }
 
     // تحديث الاسم
-    const { error: updateProfileError } = await supabaseClient
+    const { error: profileError } = await supabaseClient
         .from("profiles")
         .update({ username: newName })
         .eq("id", user.id);
-    if(updateProfileError){
-        alert("❌ فشل في تحديث الاسم: " + updateProfileError.message);
+    if(profileError){
+        alert("❌ فشل في تحديث الاسم: "+profileError.message);
         return;
     }
 
-    // تحديث كلمة المرور إذا تم كتابتها
+    // تحديث كلمة المرور إذا كتبت
     if(newPassword){
-        const { error: updatePassError } = await supabaseClient.auth.updateUser({ password: newPassword });
-        if(updatePassError){
-            alert("❌ فشل في تحديث كلمة المرور: " + updatePassError.message);
+        const { error: passError } = await supabaseClient.auth.updateUser({ password: newPassword });
+        if(passError){
+            alert("❌ فشل في تحديث كلمة المرور: "+passError.message);
             return;
         }
     }
 
-    alert("✅ تم تحديث البيانات بنجاح!");
+    alert("✅ تم حفظ البيانات بنجاح!");
     passwordInput.value = "";
 });
 
 // تسجيل الخروج
-logoutBtn.addEventListener("click", async () => {
+logoutBtn.addEventListener("click", async ()=>{
     await supabaseClient.auth.signOut();
     window.location.href = "login.html";
 });
 
 // زر إضافة منتج للادمن
-const addProductBtn = document.getElementById("addProductBtn");
 if(addProductBtn){
-    addProductBtn.addEventListener("click", () => {
+    addProductBtn.addEventListener("click", ()=>{
         alert("هنا يمكن إضافة المنتج (خاص بالادمن)");
     });
 }
+
+// مراقبة حالة الجلسة
+supabaseClient.auth.onAuthStateChange((event, session)=>{
+    if(!session){
+        window.location.href = "login.html";
+    }
+});
 </script>
 </body>
 </html>
