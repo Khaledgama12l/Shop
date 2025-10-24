@@ -55,9 +55,8 @@ registerForm.addEventListener("submit", e => {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>إنشاء حساب - MyShop</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <style>
-    body {
+      body {
       font-family: 'Cairo', sans-serif;
       background: #000;
       color: #fff;
@@ -68,7 +67,7 @@ registerForm.addEventListener("submit", e => {
       margin: 0;
     }
     form {
-      background: #111;
+        background: #111;
       padding: 30px;
       border-radius: 10px;
       display: flex;
@@ -77,9 +76,9 @@ registerForm.addEventListener("submit", e => {
       width: 300px;
     }
     input, button {
-      padding: 10px;
-      border-radius: 6px;
-      border: none;
+        padding: 10px;
+        border-radius: 6px;
+        border: none;
     }
     button {
       background: #00BFFF;
@@ -91,30 +90,31 @@ registerForm.addEventListener("submit", e => {
       background: #009ACD;
     }
     a {
-      color: #00BFFF;
-      text-decoration: none;
-      text-align: center;
+        color: #00BFFF;
+        text-decoration: none;
+        text-align: center;
     }
     a:hover {
-      text-decoration: underline;
+        text-decoration: underline;
     }
   </style>
 </head>
 <body>
-
-<form id="registerForm">
-  <h2>إنشاء حساب جديد</h2>
-  <input type="text" id="name" placeholder="الاسم" required />
-  <input type="email" id="email" placeholder="الإيميل" required />
-  <input type="password" id="password" placeholder="كلمة المرور" required />
-  <button type="submit">إنشاء الحساب</button>
-  <a href="login.html">لديك حساب بالفعل؟ تسجيل الدخول</a>
-</form>
-
-<script>
-  // تهيئة Supabase
-  const supabase = supabase.createClient(
-    'https://uhlo0cami2znerc9bjgxifuc.supabase.co',
+    
+    <form id="registerForm">
+        <h2>إنشاء حساب جديد</h2>
+        <input type="text" id="name" placeholder="الاسم" required />
+        <input type="email" id="email" placeholder="الإيميل" required />
+        <input type="password" id="password" placeholder="كلمة المرور" required />
+        <button type="submit">إنشاء الحساب</button>
+        <a href="login.html">لديك حساب بالفعل؟ تسجيل الدخول</a>
+    </form>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script>
+        // تهيئة Supabase
+        const supabase = supabase.createClient(
+            'https://uhlo0cami2znerc9bjgxifuc.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL3N1cGFiYXNlLnZlcnNlbC5hcHAvdjE6cm9sZSI6ImFub24iLCJpYXQiOjE2ODk2NzYzNzksImV4cCI6MjAwNTI1MjM3OX0.7yWm6gkPZf7zZsL1nRj16nV'
   );
 
