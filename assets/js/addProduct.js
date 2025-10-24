@@ -75,86 +75,243 @@
 // });
 
 
-    const productForm = document.getElementById("productForm");
-    const productsList = document.getElementById("productsList");
+//     const productForm = document.getElementById("productForm");
+//     const productsList = document.getElementById("productsList");
 
-    let products = JSON.parse(localStorage.getItem("products")) || [];
+//     let products = JSON.parse(localStorage.getItem("products")) || [];
 
-    function displayProducts() {
-      productsList.innerHTML = "";
+//     function displayProducts() {
+//       productsList.innerHTML = "";
 
-      if (products.length === 0) {
-        productsList.innerHTML = "<p style='text-align:center;color:#aaa'>لا توجد منتجات بعد.</p>";
-        return;
-      }
+//       if (products.length === 0) {
+//         productsList.innerHTML = "<p style='text-align:center;color:#aaa'>لا توجد منتجات بعد.</p>";
+//         return;
+//       }
 
-      products.forEach(p => {
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        card.innerHTML = `
-          <img src="${p.image}" alt="${p.name}">
-          <h4>${p.name}</h4>
-          <p>${p.description}</p>
-          <p>${p.price} جنيه</p>
-          <p style="font-size:12px;color:#888">القسم: ${p.section}</p>
-          <div style="margin-top:8px; display:flex; justify-content:center; gap:6px;">
-        <button class="edit" data-id="${p.id}"> تعديل</button>
-        <button class="delete" data-id="${p.id}"> حذف</button>
-            </div>
-        `;
-        productsList.appendChild(card);
-      });
-    }
+//       products.forEach(p => {
+//         const card = document.createElement('div');
+//         card.className = 'product-card';
+//         card.innerHTML = `
+//           <img src="${p.image}" alt="${p.name}">
+//           <h4>${p.name}</h4>
+//           <p>${p.description}</p>
+//           <p>${p.price} جنيه</p>
+//           <p style="font-size:12px;color:#888">القسم: ${p.section}</p>
+//           <div style="margin-top:8px; display:flex; justify-content:center; gap:6px;">
+//         <button class="edit" data-id="${p.id}"> تعديل</button>
+//         <button class="delete" data-id="${p.id}"> حذف</button>
+//             </div>
+//         `;
+//         productsList.appendChild(card);
+//       });
+//     }
 
-    productForm.addEventListener('submit', e => {
-      e.preventDefault();
+//     productForm.addEventListener('submit', e => {
+//       e.preventDefault();
 
-      const name = document.getElementById('name').value.trim();
-      const description = document.getElementById('description').value.trim();
-      const price = document.getElementById('price').value.trim();
-      const imageInput = document.getElementById('image');
-      const section = document.getElementById('section').value;
+//       const name = document.getElementById('name').value.trim();
+//       const description = document.getElementById('description').value.trim();
+//       const price = document.getElementById('price').value.trim();
+//       const imageInput = document.getElementById('image');
+//       const section = document.getElementById('section').value;
 
-      if (!name || !description || !price || imageInput.files.length === 0 || !section) {
-        alert('يرجى ملء جميع الحقول!');
-        return;
-      }
+//       if (!name || !description || !price || imageInput.files.length === 0 || !section) {
+//         alert('يرجى ملء جميع الحقول!');
+//         return;
+//       }
 
-      const file = imageInput.files[0];
-      const reader = new FileReader();
-      reader.onload = function() {
-        const imageBase64 = reader.result;
+//       const file = imageInput.files[0];
+//       const reader = new FileReader();
+//       reader.onload = function() {
+//         const imageBase64 = reader.result;
         
 
-        const newProduct = {
-          id: Date.now(),
-          name,
-          description, // ✅ تم إضافته هنا
-          price,
-          image: imageBase64,
-          section
-        };
+//         const newProduct = {
+//           id: Date.now(),
+//           name,
+//           description, // ✅ تم إضافته هنا
+//           price,
+//           image: imageBase64,
+//           section
+//         };
 
-        products.push(newProduct);
-        localStorage.setItem('products', JSON.stringify(products));
-        displayProducts();
-        productForm.reset();
-        alert('✅ تمت إضافة المنتج بنجاح!');
-      };
-      reader.readAsDataURL(file);
-    });
+//         products.push(newProduct);
+//         localStorage.setItem('products', JSON.stringify(products));
+//         displayProducts();
+//         productForm.reset();
+//         alert('✅ تمت إضافة المنتج بنجاح!');
+//       };
+//       reader.readAsDataURL(file);
+//     });
 
-    productsList.addEventListener('click', e => {
-      const btn = e.target.closest('.delete');
-      if (!btn) return;
+//     productsList.addEventListener('click', e => {
+//       const btn = e.target.closest('.delete');
+//       if (!btn) return;
 
-      const id = Number(btn.dataset.id);
-      products = products.filter(p => p.id !== id);
-      localStorage.setItem('products', JSON.stringify(products));
-      displayProducts();
-    });
+//       const id = Number(btn.dataset.id);
+//       products = products.filter(p => p.id !== id);
+//       localStorage.setItem('products', JSON.stringify(products));
+//       displayProducts();
+//     });
 
-    productsList.addEventListener('click', e => {
+//     productsList.addEventListener('click', e => {
+//   const editBtn = e.target.closest('.edit');
+//   if (!editBtn) return;
+
+//   const id = Number(editBtn.dataset.id);
+//   const product = products.find(p => p.id === id);
+//   if (!product) return alert("❌ المنتج غير موجود!");
+
+//   const newName = prompt("📝 اسم جديد:", product.name);
+//   const newDescription = prompt("📝 وصف جديد:", product.description);
+//   const newPrice = prompt("📝 سعر جديد:", product.price);
+
+//   if (newName && newDescription && newPrice) {
+//     product.name = newName.trim();
+//     product.description = newDescription.trim();
+//     product.price = newPrice.trim();
+
+//     localStorage.setItem("products", JSON.stringify(products));
+//     displayProducts();
+//     alert("✅ تم تعديل المنتج بنجاح!");
+//   } else {
+//     alert("❌ تم إلغاء التعديل أو البيانات ناقصة.");
+//   }
+// });
+
+//     displayProducts();
+
+
+
+
+
+
+
+// تهيئة الاتصال بـ Supabase
+const supabase = supabase.createClient(
+  'https://uwlomazzncrejbgxifuc.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV3bG9tYXp6bmNyZWpiZ3hpZnVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEzMDMwODYsImV4cCI6MjA3Njg3OTA4Nn0.2imMbjsn-7mHd28HvPTJk9BGEu04JqfcESDNoBV-pSM'
+);
+
+
+const productForm = document.getElementById("productForm");
+const productsList = document.getElementById("productsList");
+
+let products = [];
+
+// جلب المنتجات من Supabase
+async function fetchProducts() {
+  const { data, error } = await supabase
+    .from('products')
+    .select('*');
+
+  if (error) {
+    console.error("❌ خطأ في جلب المنتجات:", error.message);
+    productsList.innerHTML = "<p style='text-align:center;color:#aaa'>حدث خطأ في تحميل المنتجات.</p>";
+    return;
+  }
+
+  products = data;
+  displayProducts();
+}
+
+// عرض المنتجات في الصفحة
+function displayProducts() {
+  productsList.innerHTML = "";
+
+  if (products.length === 0) {
+    productsList.innerHTML = "<p style='text-align:center;color:#aaa'>لا توجد منتجات بعد.</p>";
+    return;
+  }
+
+  products.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.innerHTML = `
+      <img src="${p.image_url}" alt="${p.name}">
+      <h4>${p.name}</h4>
+      <p>${p.description}</p>
+      <p>${p.price} جنيه</p>
+      <p style="font-size:12px;color:#888">القسم: ${p.section}</p>
+      <div style="margin-top:8px; display:flex; justify-content:center; gap:6px;">
+        <button class="edit" data-id="${p.id}"> تعديل</button>
+        <button class="delete" data-id="${p.id}"> حذف</button>
+      </div>
+    `;
+    productsList.appendChild(card);
+  });
+}
+
+// إضافة منتج جديد
+productForm.addEventListener('submit', async e => {
+  e.preventDefault();
+
+  const name = document.getElementById('name').value.trim();
+  const description = document.getElementById('description').value.trim();
+  const price = document.getElementById('price').value.trim();
+  const imageInput = document.getElementById('image');
+  const section = document.getElementById('section').value;
+
+  if (!name || !description || !price || imageInput.files.length === 0 || !section) {
+    alert('يرجى ملء جميع الحقول!');
+    return;
+  }
+
+  const file = imageInput.files[0];
+  const fileName = `products/${Date.now()}_${file.name}`;
+
+  // رفع الصورة إلى Supabase Storage
+  const { data: imageData, error: imageError } = await supabase.storage
+    .from('product-images')
+    .upload(fileName, file);
+
+  if (imageError) {
+    alert('❌ خطأ في رفع الصورة!');
+    console.error(imageError.message);
+    return;
+  }
+
+  const imageUrl = supabase.storage
+    .from('product-images')
+    .getPublicUrl(imageData.path).publicUrl;
+
+  // حفظ المنتج في قاعدة البيانات
+  const { error } = await supabase
+    .from('products')
+    .insert([{ name, description, price, section, image_url: imageUrl }]);
+
+  if (error) {
+    alert('❌ خطأ في حفظ المنتج!');
+    console.error(error.message);
+  } else {
+    alert('✅ تمت إضافة المنتج بنجاح!');
+    productForm.reset();
+    fetchProducts();
+  }
+});
+
+// حذف المنتج
+productsList.addEventListener('click', async e => {
+  const btn = e.target.closest('.delete');
+  if (!btn) return;
+
+  const id = Number(btn.dataset.id);
+  const { error } = await supabase
+    .from('products')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    alert("❌ فشل في حذف المنتج.");
+    console.error(error.message);
+  } else {
+    alert("✅ تم حذف المنتج.");
+    fetchProducts();
+  }
+});
+
+// تعديل المنتج
+productsList.addEventListener('click', async e => {
   const editBtn = e.target.closest('.edit');
   if (!editBtn) return;
 
@@ -167,16 +324,26 @@
   const newPrice = prompt("📝 سعر جديد:", product.price);
 
   if (newName && newDescription && newPrice) {
-    product.name = newName.trim();
-    product.description = newDescription.trim();
-    product.price = newPrice.trim();
+    const { error } = await supabase
+      .from('products')
+      .update({
+        name: newName.trim(),
+        description: newDescription.trim(),
+        price: newPrice.trim()
+      })
+      .eq('id', id);
 
-    localStorage.setItem("products", JSON.stringify(products));
-    displayProducts();
-    alert("✅ تم تعديل المنتج بنجاح!");
+    if (error) {
+      alert("❌ فشل في تعديل المنتج.");
+      console.error(error.message);
+    } else {
+      alert("✅ تم تعديل المنتج.");
+      fetchProducts();
+    }
   } else {
     alert("❌ تم إلغاء التعديل أو البيانات ناقصة.");
   }
 });
 
-    displayProducts();
+// تحميل المنتجات عند فتح الصفحة
+fetchProducts();

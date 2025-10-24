@@ -44,6 +44,7 @@ const headerHTML = `
         </div>
     </div>
 </nav>
+
 `;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -171,6 +172,7 @@ const footerHTML = `
         <p class="copy">© 2025 Dark Shop - جميع الحقوق محفوظة</p>
     </div>
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 `;
 
 // ===== إضافة الفوتر للصفحة =====
