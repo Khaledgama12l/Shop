@@ -182,17 +182,11 @@
 //     displayProducts();
 
 
-
-
-
-
-
 // تهيئة الاتصال بـ Supabase
   const supabaseClient = supabase.createClient(
   'https://uwlomazzncrejbgxifuc.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV3bG9tYXp6bmNyZWpiZ3hpZnVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEzMDMwODYsImV4cCI6MjA3Njg3OTA4Nn0.2imMbjsn-7mHd28HvPTJk9BGEu04JqfcESDNoBV-pSM'
 );
-
 
 const productForm = document.getElementById("productForm");
 const productsList = document.getElementById("productsList");
@@ -201,7 +195,7 @@ let products = [];
 
 // جلب المنتجات من Supabase
 async function fetchProducts() {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from('products')
     .select('*');
 
@@ -215,7 +209,7 @@ async function fetchProducts() {
   displayProducts();
 }
 
-// عرض المنتجات في الصفحة
+// عرض المنتجات
 function displayProducts() {
   productsList.innerHTML = "";
 
@@ -233,10 +227,7 @@ function displayProducts() {
       <p>${p.description}</p>
       <p>${p.price} جنيه</p>
       <p style="font-size:12px;color:#888">القسم: ${p.section}</p>
-      <div style="margin-top:8px; display:flex; justify-content:center; gap:6px;">
-        <button class="edit" data-id="${p.id}"> تعديل</button>
-        <button class="delete" data-id="${p.id}"> حذف</button>
-      </div>
+      <button class="delete" data-id="${p.id}">حذف</button>
     `;
     productsList.appendChild(card);
   });
@@ -252,31 +243,33 @@ productForm.addEventListener('submit', async e => {
   const imageInput = document.getElementById('image');
   const section = document.getElementById('section').value;
 
-  if (!name || !description || !price || imageInput.files.length === 0 || !section) {
-    alert('يرجى ملء جميع الحقول!');
+  if (!name || !description || !price || !section) {
+    alert('❌ يرجى ملء جميع الحقول!');
     return;
   }
 
-  const file = imageInput.files[0];
-  const fileName = `products/${Date.now()}_${file.name}`;
+  let imageUrl = "";
 
-  // رفع الصورة إلى Supabase Storage
-  const { data: imageData, error: imageError } = await supabase.storage
-    .from('product-images')
-    .upload(fileName, file);
+  if (imageInput.files.length > 0) {
+    const file = imageInput.files[0];
+    const fileName = `products/${Date.now()}_${file.name}`;
 
-  if (imageError) {
-    alert('❌ خطأ في رفع الصورة!');
-    console.error(imageError.message);
-    return;
+    const { data: imageData, error: imageError } = await supabaseClient.storage
+      .from('product-images')
+      .upload(fileName, file);
+
+    if (imageError) {
+      alert('❌ خطأ في رفع الصورة!');
+      console.error(imageError.message);
+      return;
+    }
+
+    imageUrl = supabaseClient.storage
+      .from('product-images')
+      .getPublicUrl(imageData.path).publicUrl;
   }
 
-  const imageUrl = supabase.storage
-    .from('product-images')
-    .getPublicUrl(imageData.path).publicUrl;
-
-  // حفظ المنتج في قاعدة البيانات
-  const { error } = await supabase
+  const { error } = await supabaseClient
     .from('products')
     .insert([{ name, description, price, section, image_url: imageUrl }]);
 
@@ -296,7 +289,7 @@ productsList.addEventListener('click', async e => {
   if (!btn) return;
 
   const id = Number(btn.dataset.id);
-  const { error } = await supabase
+  const { error } = await supabaseClient
     .from('products')
     .delete()
     .eq('id', id);
@@ -307,41 +300,6 @@ productsList.addEventListener('click', async e => {
   } else {
     alert("✅ تم حذف المنتج.");
     fetchProducts();
-  }
-});
-
-// تعديل المنتج
-productsList.addEventListener('click', async e => {
-  const editBtn = e.target.closest('.edit');
-  if (!editBtn) return;
-
-  const id = Number(editBtn.dataset.id);
-  const product = products.find(p => p.id === id);
-  if (!product) return alert("❌ المنتج غير موجود!");
-
-  const newName = prompt("📝 اسم جديد:", product.name);
-  const newDescription = prompt("📝 وصف جديد:", product.description);
-  const newPrice = prompt("📝 سعر جديد:", product.price);
-
-  if (newName && newDescription && newPrice) {
-    const { error } = await supabase
-      .from('products')
-      .update({
-        name: newName.trim(),
-        description: newDescription.trim(),
-        price: newPrice.trim()
-      })
-      .eq('id', id);
-
-    if (error) {
-      alert("❌ فشل في تعديل المنتج.");
-      console.error(error.message);
-    } else {
-      alert("✅ تم تعديل المنتج.");
-      fetchProducts();
-    }
-  } else {
-    alert("❌ تم إلغاء التعديل أو البيانات ناقصة.");
   }
 });
 
