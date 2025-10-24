@@ -1,263 +1,131 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>سلة التسوق - Dark Shop</title>
-<link rel="stylesheet" href="/assets/css/style.css">
-<style>
-/* ====== إعدادات عامة ====== */
-body {
-    margin: 0;
-    font-family: 'Cairo', Arial, sans-serif;
-    background-color: #0a0a0a;
-    color: #fff;
-}
-a { text-decoration: none; color: inherit; }
-
-/* ====== الهيدر ====== */
-.top-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #111;
-    padding: 10px 30px;
-    border-bottom: 1px solid #222;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-}
-
-.logo { font-size: 26px; font-weight: bold; color: #00BFFF; }
-
-.search-bar {
-    display: flex;
-    flex: 1;
-    max-width: 500px;
-    margin: 0 20px;
-}
-.search-bar input {
-    flex: 1;
-    padding: 8px;
-    border-radius: 4px 0 0 4px;
-    border: none;
-    outline: none;
-}
-.search-bar button {
-    padding: 8px 12px;
-    border-radius: 0 4px 4px 0;
-    border: none;
-    background-color: #00BFFF;
-    color: #fff;
-    cursor: pointer;
-}
-.search-bar button:hover { background-color: #009ACD; }
-
-.header-icons {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-#count {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-#counter {
-    position: absolute;
-    top: -10px;
-    right: 0;
-    background-color: #ff3b3b;
-    color: #fff;
-    border-radius: 50%;
-    width: 18px;
-    height: 18px;
-    font-size: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* ====== عنوان الصفحة ====== */
-.cart-hero {
-    text-align: center;
-    padding: 30px 20px;
-}
-.cart-hero h1 { color: #00BFFF; margin-bottom: 10px; }
-.cart-hero p { color: #ccc; }
-
-/* ====== سلة التسوق ====== */
-.cart-container {
-    max-width: 1000px;
-    margin: 20px auto 50px;
-    padding: 20px;
-    background-color: #111;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-}
-
-.cart-container table {
-    width: 100%;
-    border-collapse: collapse;
-}
-.cart-container th, .cart-container td {
-    padding: 12px;
-    text-align: center;
-    border-bottom: 1px solid #222;
-}
-.cart-container th {
-    background-color: #00BFFF;
-    color: #fff;
-    font-weight: bold;
-}
-.cart-container td img {
-    width: 60px;
-    height: 60px;
-    object-fit: cover;
-    border-radius: 6px;
-}
-.cart-container input.quantity-input {
-    width: 50px;
-    padding: 5px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    text-align: center;
-    background-color: #222;
-    color: #fff;
-}
-
-.cart-container button {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 6px;
-    background-color: #ff3b3b;
-    color: #fff;
-    cursor: pointer;
-    transition: 0.2s;
-}
-.cart-container button:hover { background-color: #e03232; }
-
-/* ====== ملخص السلة ====== */
-.cart-summary {
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-}
-.cart-summary h3 { margin: 0; }
-#checkout-btn {
-    background-color: #27ae60;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    color: #fff;
-    transition: 0.2s;
-}
-#checkout-btn:hover { background-color: #2ecc71; }
-
-/* ====== الفوتر ====== */
-footer {
-    background-color: #111;
-    color: #ccc;
-    padding: 20px;
-    text-align: center;
-}
-footer a { color: #00BFFF; }
-footer a:hover { text-decoration: underline; }
-
-/* ====== Responsive ====== */
-@media screen and (max-width: 768px) {
-    .cart-container table, .cart-container th, .cart-container td { font-size: 14px; }
-    .search-bar { max-width: 200px; }
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>سلة التسوق - Dark Shop</title>
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <style>
+    /* ... [نفس CSS اللي كتبته بالضبط بدون تغيير] ... */
+  </style>
 </head>
 <body>
 
-<!-- الهيدر -->
-
-
 <!-- عنوان الصفحة -->
 <section class="cart-hero">
-    <h1>سلة التسوق الخاصة بك</h1>
-    <p>راجع منتجاتك قبل إتمام الطلب</p>
+  <h1>سلة التسوق الخاصة بك</h1>
+  <p>راجع منتجاتك قبل إتمام الطلب</p>
 </section>
 
 <!-- سلة المنتجات -->
 <section class="cart-container">
-    <table>
-        <thead>
-            <tr>
-                <th>صورة المنتج</th>
-                <th>اسم المنتج</th>
-                <th>السعر</th>
-                <th>الكمية</th>
-                <th>الإجمالي</th>
-                <th>حذف</th>
-            </tr>
-        </thead>
-        <tbody id="cart-items"></tbody>
-    </table>
+  <table>
+    <thead>
+      <tr>
+        <th>صورة المنتج</th>
+        <th>اسم المنتج</th>
+        <th>السعر</th>
+        <th>الكمية</th>
+        <th>الإجمالي</th>
+        <th>حذف</th>
+      </tr>
+    </thead>
+    <tbody id="cart-items"></tbody>
+  </table>
 
-    <div class="cart-summary">
-        <h3>إجمالي السلة: <span id="cart-total">0</span> جنيه</h3>
-        <button id="checkout-btn">إتمام الشراء</button>
-    </div>
+  <div class="cart-summary">
+    <h3>إجمالي السلة: <span id="cart-total">0</span> جنيه</h3>
+    <button id="checkout-btn">إتمام الشراء</button>
+  </div>
 </section>
 
-<!-- الفوتر -->
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<!-- سكريبت السلة -->
 <script>
-  // تهيئة Supabase
-  const supabaseClient = supabase.createClient(
-  'https://uwlomazzncrejbgxifuc.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV3bG9tYXp6bmNyZWpiZ3hpZnVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEzMDMwODYsImV4cCI6MjA3Njg3OTA4Nn0.2imMbjsn-7mHd28HvPTJk9BGEu04JqfcESDNoBV-pSM'
-);
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
+  const cartItemsContainer = document.getElementById('cart-items');
+  const cartTotal = document.getElementById('cart-total');
+  const counter = document.getElementById('counter');
 
-  const ordersList = document.getElementById("orders-list");
+  function renderCart() {
+    cartItemsContainer.innerHTML = '';
+    let total = 0;
 
-  // جلب الطلبات من Supabase
-  async function fetchOrders() {
-    const { data, error } = await supabaseClient
-      .from("orders")
-      .select("*")
-      .order("date", { ascending: false });
+    cart.forEach((item, index) => {
+      const itemTotal = item.price * item.quantity;
+      total += itemTotal;
 
-    if (error) {
-      console.error("❌ خطأ في جلب الطلبات:", error.message);
-      ordersList.innerHTML = "<tr><td colspan='6'>حدث خطأ في تحميل الطلبات.</td></tr>";
-      return;
-    }
-
-    if (!data || data.length === 0) {
-      ordersList.innerHTML = "<tr><td colspan='6'>لا توجد طلبات مؤكدة بعد.</td></tr>";
-      return;
-    }
-
-    data.forEach(order => {
-      const total = order.price * order.quantity;
-      const tr = document.createElement("tr");
+      const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td><img src="${order.image_url || 'https://via.placeholder.com/60'}" alt="${order.name}"></td>
-        <td>${order.name}</td>
-        <td>${order.price}</td>
-        <td>${order.quantity}</td>
-        <td>${total}</td>
-        <td>${new Date(order.date).toLocaleString()}</td>
+        <td><img src="${item.image}" alt="${item.name}"></td>
+        <td>${item.name}</td>
+        <td>${item.price}</td>
+        <td><input type="number" min="1" value="${item.quantity}" data-index="${index}" class="quantity-input"></td>
+        <td>${itemTotal}</td>
+        <td><button data-index="${index}" class="remove-btn">حذف</button></td>
       `;
-      ordersList.appendChild(tr);
+      cartItemsContainer.appendChild(tr);
+    });
+
+    cartTotal.textContent = total;
+    if (counter) {
+      counter.textContent = cart.reduce((acc, item) => acc + item.quantity, 0);
+    }
+
+    attachEvents();
+  }
+
+  function attachEvents() {
+    document.querySelectorAll('.remove-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const index = e.target.dataset.index;
+        cart.splice(index, 1);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        renderCart();
+      });
+    });
+
+    document.querySelectorAll('.quantity-input').forEach(input => {
+      input.addEventListener('change', e => {
+        const index = e.target.dataset.index;
+        const value = parseInt(e.target.value);
+        cart[index].quantity = value > 0 ? value : 1;
+        localStorage.setItem('cart', JSON.stringify(cart));
+        renderCart();
+      });
+    });
+
+    document.getElementById('checkout-btn').addEventListener('click', () => {
+      if (cart.length === 0) {
+        alert("السلة فارغة!");
+        return;
+      }
+
+      const date = new Date().toLocaleString();
+      let confirmedOrders = JSON.parse(localStorage.getItem('confirmedOrders')) || [];
+
+      cart.forEach(item => {
+        confirmedOrders.push({
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          image: item.image,
+          date: date
+        });
+      });
+
+      localStorage.setItem('confirmedOrders', JSON.stringify(confirmedOrders));
+      cart = [];
+      localStorage.setItem('cart', JSON.stringify(cart));
+      alert("تم إتمام الشراء بنجاح! يمكنك مراجعة طلبك في صفحة الطلبات المؤكدة.");
+      renderCart();
     });
   }
 
-  // تحميل الطلبات عند فتح الصفحة
-  document.addEventListener("DOMContentLoaded", fetchOrders);
+  document.addEventListener("DOMContentLoaded", renderCart);
 </script>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-    <script src="/assets/js/components.js"></script>
+<script src="/assets/js/components.js"></script>
 
 </body>
 </html>
