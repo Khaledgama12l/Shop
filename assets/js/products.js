@@ -176,7 +176,13 @@ document.addEventListener("click", (e) => {
 
   const existing = cart.find((item) => item.id === selectedProduct.id);
   if (existing) existing.quantity += 1;
-  else cart.push({ ...selectedProduct, quantity: 1 });
+  else cart.push({
+  id: selectedProduct.id,
+  name: selectedProduct.name,
+  price: selectedProduct.price,
+  quantity: 1,
+  image: selectedProduct.image_url // ← هنا المفتاح الصح
+});
 
   localStorage.setItem("cart", JSON.stringify(cart));
   updateCartCounter();
