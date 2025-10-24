@@ -801,3 +801,28 @@ footer a:hover { text-decoration: underline; }
     font-size: 12px;
   }
 }
+.dropdown-content {
+    display: flex; /* يبقى flex لعرض الروابط */
+    flex-direction: column;
+    position: absolute;
+    right: 0;
+    background-color: #111;
+    min-width: 160px;
+    border: 1px solid #222;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    overflow: hidden;
+    transform-origin: top;
+    transform: scaleY(0);
+    opacity: 0;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+    z-index: 10;
+    pointer-events: none; /* لا يقبل أي تفاعل وهو مغلق */
+}
+
+/* عند الفتح */
+.dropdown.open .dropdown-content {
+    transform: scaleY(1);
+    opacity: 1;
+    pointer-events: auto; /* يسمح بالتفاعل مع الروابط */
+}

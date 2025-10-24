@@ -89,7 +89,26 @@ document.addEventListener("DOMContentLoaded", () => {
             const results = products.filter(p => p.name?.toLowerCase().includes(query));
 
             localStorage.setItem("searchResults", JSON.stringify(results));
-            window.location.href = "/search.html";
+            window.location.href = "/pages/departments/search.html";
         });
     }
+});
+// التعامل مع كل القوائم المنسدلة
+const dropdowns = document.querySelectorAll('.dropdown');
+
+dropdowns.forEach(dropdown => {
+    const btn = dropdown.querySelector('.dropbtn');
+
+    if (!btn) return;
+
+    // فتح/غلق عند الضغط على الزر
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('open');
+    });
+});
+
+// إغلاق كل القوائم عند الضغط في أي مكان خارجها
+document.addEventListener('click', () => {
+    dropdowns.forEach(drop => drop.classList.remove('open'));
 });
