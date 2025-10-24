@@ -171,6 +171,36 @@ supabaseClient.auth.onAuthStateChange((event, session)=>{
         window.location.href = "login.html";
     }
 });
+
+// تحميل بيانات المستخدم
+async function loadUserData(userId){
+  // هات بيانات البروفايل من جدول profiles
+  const { data: profile, error } = await supabaseClient
+    .from("profiles")
+    .select("*")
+    .eq("id", userId)
+    .single();
+
+  if(error){
+    console.error(error.message);
+    alert("❌ حدث خطأ أثناء جلب بياناتك.");
+    return;
+  }
+
+  // عرض الاسم من جدول profiles
+  usernameInput.value = profile.username || "";
+
+  // هات الإيميل من الـ Auth (auth.users)
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  emailInput.value = session?.user?.email || "";
+
+  // إظهار زر إضافة منتج لو المستخدم Admin
+  if(profile.role === "admin"){
+    addProductContainer.style.display = "block";
+  } else {
+    addProductContainer.style.display = "none";
+  }
+}
 </script>
 </body>
 </html>
