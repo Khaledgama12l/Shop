@@ -46,11 +46,17 @@ const headerHTML = `
 </nav>
 
 `;
-     // أضف مكتبة Supabase قبل أي سكريبتات أخرى في الصفحة
+document.addEventListener("DOMContentLoaded", () => {
+  // ===== إضافة سكريبت Supabase في الهيد =====
   const supabaseScript = document.createElement("script");
   supabaseScript.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js";
   supabaseScript.type = "text/javascript";
-  document.body.appendChild(supabaseScript);
+  supabaseScript.defer = true; // لتجنب المشاكل مع DOMContentLoaded
+  document.head.appendChild(supabaseScript);
+
+  // بعد تحميل السكريبت، تقدر تستخدم Supabase في أي سكريبت آخر بعد DOMContentLoaded
+});
+
 
 document.addEventListener("DOMContentLoaded", () => {
     // ===== إدخال الهيدر والـnav =====
