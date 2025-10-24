@@ -356,7 +356,7 @@
 
   // جلب المنتجات
   async function fetchProducts() {
-    const { data, error } = await supabase.from("products").select("*");
+    const { data, error } = await supabaseClient.from("products").select("*");
     if (error) {
       console.error("❌ خطأ في جلب المنتجات:", error.message);
       productsList.innerHTML = "<p>حدث خطأ في تحميل المنتجات.</p>";
@@ -402,13 +402,12 @@
 
     let imageUrl = "";
 
-    // رفع الصورة
     if (imageInput.files.length > 0) {
       const file = imageInput.files[0];
       const safeName = file.name.replace(/\s/g, "_");
       const fileName = `products/${Date.now()}_${safeName}`;
 
-      const { data: imageData, error: imageError } = await supabase
+      const { error: imageError } = await supabaseClient
         .storage
         .from("product-images")
         .upload(fileName, file, { upsert: true });
@@ -419,7 +418,7 @@
         return;
       }
 
-      const { data: publicUrlData } = supabase
+      const { data: publicUrlData } = supabaseClient
         .storage
         .from("product-images")
         .getPublicUrl(fileName);
@@ -427,8 +426,7 @@
       imageUrl = publicUrlData.publicUrl;
     }
 
-    // حفظ المنتج
-    const { error } = await supabase.from("products").insert([
+    const { error } = await supabaseClient.from("products").insert([
       { name, description, price, section, image_url: imageUrl }
     ]);
 
