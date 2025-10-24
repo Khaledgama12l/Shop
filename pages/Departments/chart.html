@@ -187,8 +187,8 @@ footer a:hover { text-decoration: underline; }
     </div>
     <div class="header-icons">
         <a href="/index.html">الرئيسية</a>
-        <a href="#">الحساب</a>
-        <a href="#">الطلبات</a>
+        <a href="/account.html">الحساب</a>
+        <a href="orders.html">الطلبات</a>
 
         <div id="count">
             🛒 <span id="counter">0</span>
@@ -283,15 +283,39 @@ function attachEvents() {
     });
 
     document.getElementById('checkout-btn').addEventListener('click', () => {
-        if (cart.length === 0) {
-            alert("السلة فارغة!");
-            return;
-        }
-        alert("تم إتمام الشراء بنجاح!");
-        cart = [];
-        localStorage.setItem('cart', JSON.stringify(cart));
-        renderCart();
+    if (cart.length === 0) {
+        alert("السلة فارغة!");
+        return;
+    }
+
+    // الحصول على التاريخ الحالي لكل طلب
+    const date = new Date().toLocaleString();
+
+    // جلب الطلبات المؤكدة من localStorage أو إنشاء مصفوفة جديدة
+    let confirmedOrders = JSON.parse(localStorage.getItem('confirmedOrders')) || [];
+
+    // إضافة الطلبات الحالية إلى confirmedOrders
+    cart.forEach(item => {
+        confirmedOrders.push({
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+            image: item.image,
+            date: date
+        });
     });
+
+    // حفظ الطلبات المؤكدة في localStorage
+    localStorage.setItem('confirmedOrders', JSON.stringify(confirmedOrders));
+
+    // تفريغ السلة
+    cart = [];
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    alert("تم إتمام الشراء بنجاح! يمكنك مراجعة طلبك في صفحة الطلبات المؤكدة.");
+    renderCart();
+});
+
 }
 
 // تحميل الصفحة

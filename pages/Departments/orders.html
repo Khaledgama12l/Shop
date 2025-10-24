@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الطلبات المؤكدة - Dark Shop</title>
+<link rel="stylesheet" href="/assets/css/style.css">
+<style>
+/* ====== إعدادات عامة ====== */
+body {
+    margin: 0;
+    font-family: 'Cairo', Arial, sans-serif;
+    background-color: #0a0a0a;
+    color: #fff;
+}
+a { text-decoration: none; color: inherit; }
+
+/* ====== الهيدر ====== */
+.top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #111;
+    padding: 10px 30px;
+    border-bottom: 1px solid #222;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.logo { font-size: 26px; font-weight: bold; color: #00BFFF; }
+
+.header-icons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+#count {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+#counter {
+    position: absolute;
+    top: -10px;
+    right: 0;
+    background-color: #ff3b3b;
+    color: #fff;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ====== عنوان الصفحة ====== */
+.orders-hero {
+    text-align: center;
+    padding: 30px 20px;
+}
+.orders-hero h1 { color: #00BFFF; margin-bottom: 10px; }
+.orders-hero p { color: #ccc; }
+
+/* ====== جدول الطلبات ====== */
+.orders-container {
+    max-width: 1000px;
+    margin: 20px auto 50px;
+    padding: 20px;
+    background-color: #111;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.orders-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.orders-container th, .orders-container td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #222;
+}
+.orders-container th {
+    background-color: #00BFFF;
+    color: #fff;
+    font-weight: bold;
+}
+.orders-container td img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+/* ====== الفوتر ====== */
+footer {
+    background-color: #111;
+    color: #ccc;
+    padding: 20px;
+    text-align: center;
+}
+footer a { color: #00BFFF; }
+footer a:hover { text-decoration: underline; }
+
+/* ====== Responsive ====== */
+@media screen and (max-width: 768px) {
+    .orders-container table, .orders-container th, .orders-container td { font-size: 14px; }
+}
+</style>
+</head>
+<body>
+
+<!-- الهيدر -->
+<header class="top-header">
+    <div class="logo">Dark shop</div>
+    <a href="/index.html" class="home"></a>
+
+    <div class="addProduct" id="addProductContainer" style="display:none;">
+        <a href="/addProduct.html">إضافة منتج 🛠️</a>
+    </div>
+    
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="ابحث عن منتج ما...">
+
+        <button>بحث</button>
+    </div>
+    
+    <div class="header-icons">
+        <a href="/index.html">الرئيسية</a>
+        <a href="/account.html">الحساب</a>
+        <a href="orders.html" class="active">الطلبات</a>
+        <div id="count">
+            🛒 <span id="counter">0</span>
+            <a href="pages/Departments/chart.html">السلة</a>
+        </div>
+    </div>
+</header>
+
+
+
+<!-- عنوان الصفحة -->
+<section class="orders-hero">
+    <h1>الطلبات المؤكدة</h1>
+    <p>هنا تجد جميع الطلبات التي تم تأكيدها</p>
+</section>
+
+<!-- جدول الطلبات -->
+<section class="orders-container">
+    <table>
+        <thead>
+            <tr>
+                <th>رقم الطلب</th>
+                <th>صورة المنتج</th>
+                <th>اسم المنتج</th>
+                <th>السعر</th>
+                <th>الكمية</th>
+                <th>الإجمالي</th>
+                <th>تاريخ الطلب</th>
+            </tr>
+        </thead>
+        <tbody id="orders-list">
+            <!-- سيتم تعبئتها بواسطة الجافاسكريبت -->
+        </tbody>
+    </table>
+</section>
+
+<!-- الفوتر -->
+<footer>
+    <p>© 2025 Dark Shop - جميع الحقوق محفوظة</p>
+</footer>
+
+<script>
+// ====== جافاسكريبت لعرض الطلبات المؤكدة ======
+let confirmedOrders = JSON.parse(localStorage.getItem('confirmedOrders')) || [];
+const ordersList = document.getElementById('orders-list');
+
+function renderOrders() {
+    ordersList.innerHTML = '';
+    if (confirmedOrders.length === 0) {
+        ordersList.innerHTML = `<tr><td colspan="7">لا توجد طلبات مؤكدة بعد.</td></tr>`;
+        return;
+    }
+
+    confirmedOrders.forEach((order, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>#${index + 1}</td>
+            <td><img src="${order.image}" alt="${order.name}"></td>
+            <td>${order.name}</td>
+            <td>${order.price}</td>
+            <td>${order.quantity}</td>
+            <td>${order.price * order.quantity}</td>
+            <td>${order.date}</td>
+        `;
+        ordersList.appendChild(tr);
+    });
+}
+
+// تحميل الصفحة
+renderOrders();
+</script>
+
+</body>
+</html>

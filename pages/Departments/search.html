@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نتائج البحث - Dark Shop</title>
+<style>
+body {
+    background-color: #0a0a0a;
+    color: #fff;
+    font-family: 'Cairo', sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+}
+.product {
+    background: #111;
+    padding: 15px;
+    width: 200px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+.product img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+.product h3 { color: #00BFFF; margin: 10px 0 5px; }
+.product p { color: #ccc; margin: 0 0 5px; }
+.back-btn {
+    display: inline-block;
+    background: #00BFFF;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    margin-top: 20px;
+}
+.back-btn:hover { background: #009ACD; }
+</style>
+</head>
+<body>
+
+<h1 style="text-align:center;">نتائج البحث</h1>
+<div class="container" id="results"></div>
+<div style="text-align:center;">
+    <a href="/index.html" class="back-btn">⬅ العودة إلى الرئيسية</a>
+</div>
+
+<script>
+// ====== عرض نتائج البحث ======
+const resultsContainer = document.getElementById('results');
+const results = JSON.parse(localStorage.getItem('searchResults')) || [];
+
+if (results.length === 0) {
+    resultsContainer.innerHTML = "<p>لا توجد نتائج مطابقة.</p>";
+} else {
+    results.forEach(p => {
+        const card = document.createElement('div');
+        card.classList.add('product');
+        card.innerHTML = `
+            <img src="${p.image}" alt="${p.name}">
+            <h3>${p.name}</h3>
+            <p>السعر: ${p.price} جنيه</p>
+            <p style="font-size:12px; color:#888;">القسم: ${p.section}</p>
+        `;
+        resultsContainer.appendChild(card);
+    });
+}
+</script>
+
+</body>
+</html>

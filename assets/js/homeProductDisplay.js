@@ -95,3 +95,41 @@ document.addEventListener("DOMContentLoaded", () => {
     const homeContainer = document.getElementById("productsContainer");
     if (homeContainer) displayHomeProducts();
 });
+
+
+
+// ====== كود البحث ======
+const searchInput = document.querySelector('.search-bar input');
+const searchButton = document.querySelector('.search-bar button');
+
+searchButton.addEventListener('click', () => {
+    const query = searchInput.value.trim().toLowerCase();
+    if (!query) {
+        alert("من فضلك اكتب اسم المنتج الذي تريد البحث عنه.");
+        return;
+    }
+
+    // جلب المنتجات من localStorage
+    let products = JSON.parse(localStorage.getItem('products')) || [];
+
+    // فلترة النتائج بناءً على الاسم
+    const results = products.filter(p =>
+        p.name.toLowerCase().includes(query)
+    );
+
+    // حفظ نتائج البحث مؤقتًا في localStorage
+    localStorage.setItem('searchResults', JSON.stringify(results));
+
+    // الانتقال إلى صفحة نتائج البحث
+    window.location.href = 'pages/Departments/search.html';
+});
+
+const dropdown = document.querySelector('.dropdown');
+const dropBtn = document.querySelector('.dropbtn');
+
+dropBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    dropdown.classList.toggle('open');
+});
+
+
