@@ -1,4 +1,4 @@
-// ======= productsWithCart.js =======
+
 
 // جلب المنتجات والسلة من localStorage
 const products = JSON.parse(localStorage.getItem("products")) || [];
