@@ -52,13 +52,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const logoutBtn = document.getElementById("logoutBtn");
     const addProductContainer = document.getElementById("addProductContainer");
 
-    // الحصول على المستخدم الحالي
-    const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
-    if (userError || !user) {
+    // ===== تحقق من الجلسة الحالية =====
+    const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+    if (sessionError || !session) {
         alert("❌ يرجى تسجيل الدخول أولًا!");
         window.location.href = "login.html";
         return;
     }
+    const user = session.user;
 
     // جلب بيانات profile
     const { data: profile, error: profileError } = await supabaseClient
@@ -83,7 +84,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         addProductContainer.style.display = "block";
     }
 
-    // حفظ البيانات
+    // ===== حفظ البيانات =====
     saveBtn.addEventListener("click", async () => {
         const newName = usernameInput.value.trim();
         const newPassword = passwordInput.value.trim();
@@ -117,19 +118,27 @@ document.addEventListener("DOMContentLoaded", async () => {
         passwordInput.value = "";
     });
 
-    // تسجيل الخروج
+    // ===== تسجيل الخروج =====
     logoutBtn.addEventListener("click", async () => {
         await supabaseClient.auth.signOut();
         window.location.href = "login.html";
     });
 
-    // زر إضافة منتج (للاختبار فقط)
+    // ===== زر إضافة منتج للادمن =====
     const addProductBtn = document.getElementById("addProductBtn");
     if(addProductBtn){
         addProductBtn.addEventListener("click", () => {
             alert("هنا يمكن إضافة المنتج (خاص بالادمن)");
         });
     }
+
+    // ===== الاستماع لتغيير الجلسة =====
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+        if(!session){
+            window.location.href = "login.html";
+        }
+    });
+
 });
 </script>
 
