@@ -113,7 +113,9 @@ registerForm.addEventListener("submit", e => {
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script>
         // تهيئة Supabase
-        const supabase = supabase.createClient(
+        import { createClient } from '@supabase/supabase-js';
+
+        const supabase = createClient(
             'https://uhlo0cami2znerc9bjgxifuc.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwczovL3N1cGFiYXNlLnZlcnNlbC5hcHAvdjE6cm9sZSI6ImFub24iLCJpYXQiOjE2ODk2NzYzNzksImV4cCI6MjAwNTI1MjM3OX0.7yWm6gkPZf7zZsL1nRj16nV'
   );
