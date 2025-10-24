@@ -265,7 +265,7 @@ productForm.addEventListener('submit', async e => {
   // رفع الصورة إذا تم اختيارها
   if (imageInput.files.length > 0) {
     const file = imageInput.files[0];
-    const fileName = `products/${Date.now()}_${file.name.replace(/\s/g,'_')}`;
+    const fileName = `${Date.now()}_${file.name.replace(/\s/g,'_')}`;
 
     const { data: imageData, error: imageError } = await supabaseClient.storage
       .from('images')
