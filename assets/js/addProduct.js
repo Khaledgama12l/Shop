@@ -277,9 +277,12 @@ productForm.addEventListener('submit', async e => {
       return;
     }
 
-    imageUrl = supabaseClient.storage
-      .from('images')
-      .getPublicUrl(imageData.path).publicUrl;
+    const { data: publicUrlData } = supabaseClient
+  .storage
+  .from('images')
+  .getPublicUrl(fileName); // استخدم نفس fileName اللي رفعت بيه
+
+imageUrl = publicUrlData.publicUrl;
   }
 
   const { error } = await supabaseClient
