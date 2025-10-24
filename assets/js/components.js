@@ -5,7 +5,7 @@ const headerHTML = `
     <a href="/index.html" class="home"></a>
 
     <div class="addProduct" id="addProductContainer" style="display:none;">
-        <a href="/addProduct.html">إضافة منتج 🛠️</a>
+        <a href="addProduct.html">إضافة منتج 🛠️</a>
     </div>
     
     <div class="search-bar">
@@ -111,4 +111,69 @@ dropdowns.forEach(dropdown => {
 // إغلاق كل القوائم عند الضغط في أي مكان خارجها
 document.addEventListener('click', () => {
     dropdowns.forEach(drop => drop.classList.remove('open'));
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ===== Footer HTML =====
+const footerHTML = `
+<footer>
+    <div class="footer-top">
+        <div class="footer-section">
+            <h4>عن Dark shop</h4>
+            <a href="#">من نحن</a>
+            <a href="#">انضم إلينا</a>
+            <a href="#">المدونة</a>
+            <a href="#">تواصل معنا</a>
+        </div>
+        <div class="footer-section">
+            <h4>خدمة العملاء</h4>
+            <a href="#">مساعدة</a>
+            <a href="#">الأسئلة الشائعة</a>
+            <a href="#">سياسة الإرجاع</a>
+            <a href="#">طرق الدفع</a>
+        </div>
+        <div class="footer-section">
+            <h4>حسابك</h4>
+            <a href="login.html">تسجيل الدخول</a>
+            <a href="/pages/Departments/orders.html">طلباتي</a>
+            <a href="#">المفضلة</a>
+            <a href="#">العناوين</a>
+        </div>
+        <div class="footer-section">
+            <h4>سياسات</h4>
+            <a href="#">الشروط والأحكام</a>
+            <a href="#">سياسة الخصوصية</a>
+            <a href="#">الأمان والبيانات</a>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>تابعنا على</p>
+        <div class="social-links">
+            <a href="https://www.facebook.com/?locale=ar_AR">فيسبوك</a>
+            <a href="https://www.instagram.com/">إنستجرام</a>
+            <a href="https://twitter.com/">تويتر</a>
+            <a href="https://www.youtube.com/?app=desktop&hl=ar">يوتيوب</a>
+        </div>
+        <p class="copy">© 2025 Dark Shop - جميع الحقوق محفوظة</p>
+    </div>
+</footer>
+`;
+
+// ===== إضافة الفوتر للصفحة =====
+document.addEventListener("DOMContentLoaded", () => {
+    document.body.insertAdjacentHTML("beforeend", footerHTML);
 });

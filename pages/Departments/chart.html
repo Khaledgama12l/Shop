@@ -209,9 +209,7 @@ footer a:hover { text-decoration: underline; }
 </section>
 
 <!-- الفوتر -->
-<footer>
-    <p>© 2025 Dark Shop - جميع الحقوق محفوظة</p>
-</footer>
+
 
 <script>
 // ====== جافا سكريبت سلة التسوق ======
@@ -241,7 +239,9 @@ function renderCart() {
     });
 
     cartTotal.textContent = total;
+    if (counter) {
     counter.textContent = cart.reduce((acc, item) => acc + item.quantity, 0);
+}
     attachEvents();
 }
 

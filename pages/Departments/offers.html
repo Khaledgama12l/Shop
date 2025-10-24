@@ -5,102 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dark Shop - العروض</title>
 <link rel="stylesheet" href="/assets/css/style.css">
-<style>
-  /* ======= سكشن المنتجات ======= */
-  .section-block {
-      margin: 40px auto;
-      width: 90%;
-      max-width: 1200px;
-      background-color: #0f0f0f;
-      padding: 20px;
-      border-radius: 12px;
-  }
 
-  .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 2px solid #00BFFF;
-      margin-bottom: 20px;
-      padding-bottom: 5px;
-  }
 
-  .section-header h2 {
-      color: #00BFFF;
-      font-size: 22px;
-  }
-
-  .section-header .view-all {
-      color: #00BFFF;
-      text-decoration: none;
-      font-size: 14px;
-  }
-
-  .section-header .view-all:hover {
-      text-decoration: underline;
-  }
-
-  /* ======= شبكة الكروت ======= */
-  .product-list {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-      justify-items: center;
-  }
-
-  @media screen and (max-width: 1024px) {
-      .product-list { grid-template-columns: repeat(3, 1fr); }
-  }
-  @media screen and (max-width: 768px) {
-      .product-list { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media screen and (max-width: 480px) {
-      .product-list { grid-template-columns: 1fr; }
-  }
-
-  .product-card {
-      background-color: #111;
-      border: 1px solid #222;
-      border-radius: 10px;
-      padding: 10px;
-      text-align: center;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      position: relative;
-  }
-
-  .product-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 0 10px rgba(0,191,255,0.4);
-  }
-
-  .product-card img {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-      border-radius: 8px;
-  }
-
-  .product-card h4 {
-      margin: 10px 0 5px;
-      color: #00BFFF;
-  }
-
-  .product-card p {
-      color: #ccc;
-  }
-
-  .offer-badge {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background-color: #FF4C4C;
-      color: #fff;
-      padding: 5px 8px;
-      border-radius: 5px;
-      font-size: 12px;
-      font-weight: bold;
-  }
-</style>
 </head>
 <body>
 
@@ -114,54 +20,13 @@
 </section>
 
 <!-- ======= المنتجات ديناميكياً ======= -->
-<section class="home-products" id="productsContainer">
+<section class="home-products" id="productsSection" data-section="العروض">
     <!-- سيتم ملء هذا القسم ديناميكياً عبر جافاسكريبت -->    
 
 <!-- ======= الفوتر ======= -->
 
 <!-- ======= الفوتر ======= -->
-<footer>
-    <div class="footer-top">
-        <div class="footer-section">
-            <h4>عن Dark shop</h4>
-            <a href="#">من نحن</a>
-            <a href="#">انضم إلينا</a>
-            <a href="#">المدونة</a>
-            <a href="#">تواصل معنا</a>
-        </div>
-        <div class="footer-section">
-            <h4>خدمة العملاء</h4>
-            <a href="#">مساعدة</a>
-            <a href="#">الأسئلة الشائعة</a>
-            <a href="#">سياسة الإرجاع</a>
-            <a href="#">طرق الدفع</a>
-        </div>
-        <div class="footer-section">
-            <h4>حسابك</h4>
-            <a href="login.html">تسجيل الدخول</a>
-            <a href="#">طلباتي</a>
-            <a href="#">المفضلة</a>
-            <a href="#">العناوين</a>
-        </div>
-        <div class="footer-section">
-            <h4>سياسات</h4>
-            <a href="#">الشروط والأحكام</a>
-            <a href="#">سياسة الخصوصية</a>
-            <a href="#">الأمان والبيانات</a>
-        </div>
-    </div>
 
-    <div class="footer-bottom">
-        <p>تابعنا على</p>
-        <div class="social-links">
-            <a href="#">فيسبوك</a>
-            <a href="#">إنستجرام</a>
-            <a href="#">تويتر</a>
-            <a href="#">يوتيوب</a>
-        </div>
-        <p class="copy">© 2025 Dark Shop - جميع الحقوق محفوظة</p>
-    </div>
-</footer>
 
 <!-- ======= سكربت عرض العروض ======= -->
 <script src="/assets/js/products.js"></script>

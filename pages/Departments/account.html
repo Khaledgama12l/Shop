@@ -3,50 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>حسابي - MyShop</title>
-<link rel="stylesheet" href="assets/css/style.css">
-<style>
-body { font-family:'Cairo',sans-serif; background:#000; color:#fff; margin:0; }
-.account-container { max-width:900px; margin:50px auto; background:#111; border:1px solid #222; border-radius:10px; padding:30px; display:flex; flex-direction:column; gap:30px; }
-.account-header { text-align:center; color:#00BFFF; font-size:24px; font-weight:bold; }
-.account-section { display:flex; flex-direction:column; gap:15px; }
-.account-section label { display:block; margin-bottom:5px; }
-.account-section input { width:100%; padding:10px; border-radius:6px; border:1px solid #222; background:#000; color:#fff; }
-.account-section button { width:fit-content; padding:10px 20px; background:#00BFFF; color:#fff; border:none; border-radius:6px; cursor:pointer; }
-.account-section button:hover { background:#009ACD; }
-.orders-list { background:#111; border:1px solid #222; border-radius:6px; padding:15px; }
-.orders-list div { display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid #222; padding-bottom:5px; }
-.orders-list div:last-child { border-bottom:none; }
-.orders-list button { padding:4px 8px; background:#00BFFF; border:none; border-radius:4px; cursor:pointer; color:#fff; }
-.orders-list button:hover { background:#009ACD; }
-</style>
-
+<title>حسابي - Dark Shop</title>
+<link rel="stylesheet" href="/assets/css/style.css">
+<link rel="stylesheet" href="/assets/css/account.css">
 </head>
 <body>
-    <header class="top-header">
-    <div class="logo">Dark shop</div>
-    <a href="index.html" class="home"></a>
-    <div class="addProduct" id="addProductContainer" style="display:none;">
-    <a href="/addProduct.html">إضافة منتج 🛠️</a>
-</div>
 
-    <div class="search-bar">
-        <input type="text" placeholder="ابحث عن منتجات، علامات تجارية والمزيد...">
-        <button>بحث</button>
-    </div>
+<!-- ======== Header ======== -->
 
-    <div class="header-icons">
-        <a href="index.html">الرئيسية</a>
-        <a href="account.html">الحساب</a>
-        <a href="#">الطلبات</a>
 
-        <!-- ✅ خلى العداد داخل عنصر منفصل -->
-        <div id="count">
-            🛒 <span id="counter">0</span>
-            <a href="chart.html">السلة</a>
-        </div>
-    </div>
-</header>
+<!-- ======== Account Container ======== -->
 <div class="account-container">
     <div class="account-header">حسابي</div>
 
@@ -68,71 +34,115 @@ body { font-family:'Cairo',sans-serif; background:#000; color:#fff; margin:0; }
     </div>
 </div>
 
+<!-- ======== JS ======== -->
+<script src="/assets/js/components.js"></script>
 <script>
-const userData = JSON.parse(localStorage.getItem("user"));
-if(!userData){
-    alert("❌ يرجى تسجيل الدخول أولًا!");
-    window.location.href = "login.html";
-}
+document.addEventListener("DOMContentLoaded", () => {
 
-// عرض البيانات
-const usernameInput = document.getElementById("username");
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
-usernameInput.value = userData.name;
-emailInput.value = userData.email;
-passwordInput.value = userData.password;
+    // ====== Dropdown Menu ======
+    const dropdowns = document.querySelectorAll('.dropdown');
+    dropdowns.forEach(dropdown => {
+        const btn = dropdown.querySelector('.dropbtn');
+        if(!btn) return;
 
-// حفظ البيانات
-document.getElementById("saveData").addEventListener("click", () => {
-    const name = usernameInput.value.trim();
-    const email = emailInput.value.trim();
-    const password = passwordInput.value.trim();
-    if(!name || !email || !password){ alert("يرجى ملء جميع الحقول!"); return; }
-
-    localStorage.setItem("user", JSON.stringify({ name, email, password }));
-    alert("✅ تم حفظ البيانات بنجاح!");
-});
-
-// تسجيل خروج
-document.getElementById("logoutBtn").addEventListener("click", () => {
-    localStorage.removeItem("user");
-    alert("✅ تم تسجيل الخروج!");
-    window.location.href = "login.html";
-});
-
-// عرض الطلبات السابقة
-const cart = JSON.parse(localStorage.getItem("cart")) || [];
-const ordersList = document.getElementById("ordersList");
-
-function displayOrders(){
-    if(cart.length===0){ ordersList.innerHTML="لا توجد طلبات بعد."; return; }
-    ordersList.innerHTML="";
-    cart.forEach((item,index)=>{
-        const div = document.createElement("div");
-        div.innerHTML = `<span>${item.name} - ${item.quantity} × ${item.price} جنيه</span>
-        <button data-index="${index}" class="deleteOrder">حذف</button>`;
-        ordersList.appendChild(div);
-    });
-    document.querySelectorAll(".deleteOrder").forEach(btn=>{
-        btn.addEventListener("click", e=>{
-            const i = e.target.dataset.index;
-            cart.splice(i,1);
-            localStorage.setItem("cart",JSON.stringify(cart));
-            displayOrders();
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation(); // منع انتشار الحدث
+            dropdown.classList.toggle('open');
         });
     });
-}
 
-displayOrders();
-// ✅ إظهار زر إضافة المنتج للأدمن فقط
-const addProductContainer = document.getElementById("addProductContainer");
+    // إغلاق جميع القوائم عند الضغط خارجها
+    document.addEventListener('click', () => {
+        dropdowns.forEach(drop => drop.classList.remove('open'));
+    });
 
-if (userData && userData.role === "admin") {
-    addProductContainer.style.display = "block";
-} else {
-    addProductContainer.style.display = "none";
-}
+    // ====== User Data ======
+    const userData = JSON.parse(localStorage.getItem("user"));
+    if(!userData){
+        alert("❌ يرجى تسجيل الدخول أولًا!");
+        window.location.href = "login.html";
+        return;
+    }
+
+    const usernameInput = document.getElementById("username");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+
+    usernameInput.value = userData.name || "";
+    emailInput.value = userData.email || "";
+    passwordInput.value = userData.password || "";
+
+    // زر حفظ البيانات
+    const saveBtn = document.getElementById("saveData");
+    saveBtn.addEventListener("click", () => {
+        const name = usernameInput.value.trim();
+        const email = emailInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        if(!name || !email || !password){
+            alert("يرجى ملء جميع الحقول!");
+            return;
+        }
+
+        const updatedUser = {
+            name, email, password,
+            role: userData.role || "user"
+        };
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+        alert("✅ تم حفظ البيانات بنجاح!");
+    });
+
+    // زر تسجيل الخروج
+    const logoutBtn = document.getElementById("logoutBtn");
+    logoutBtn.addEventListener("click", () => {
+        localStorage.removeItem("user");
+        alert("✅ تم تسجيل الخروج!");
+        window.location.href = "login.html";
+    });
+
+    // ====== Orders List ======
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const ordersList = document.getElementById("ordersList");
+
+    function displayOrders() {
+        if(cart.length === 0){
+            ordersList.innerHTML = "لا توجد طلبات بعد.";
+            return;
+        }
+
+        ordersList.innerHTML = "";
+        cart.forEach((item, index) => {
+            const div = document.createElement("div");
+            div.innerHTML = `
+                <span>${item.name} - ${item.quantity} × ${item.price} جنيه</span>
+                <button data-index="${index}" class="deleteOrder">حذف</button>
+            `;
+            ordersList.appendChild(div);
+        });
+
+        // إضافة حدث حذف لكل زر
+        const deleteButtons = document.querySelectorAll(".deleteOrder");
+        deleteButtons.forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const i = e.target.dataset.index;
+                cart.splice(i, 1);
+                localStorage.setItem("cart", JSON.stringify(cart));
+                displayOrders();
+            });
+        });
+    }
+
+    displayOrders();
+
+    // ====== Show Add Product Button for Admin ======
+    const addProductContainer = document.getElementById("addProductContainer");
+    if(userData.role === "admin"){
+        addProductContainer.style.display = "block";
+    } else {
+        addProductContainer.style.display = "none";
+    }
+
+});
 
 </script>
 

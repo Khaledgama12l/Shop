@@ -15,6 +15,7 @@ function updateCartCounter() {
 
 // الأقسام للصفحة الرئيسية
 const sections = [
+    { name: "العروض", link: "pages/Departments/offers.html" },
     { name: "الإلكترونيات", link: "pages/Departments/electronics.html" },
     { name: "الموبايلات", link: "pages/Departments/mobiles.html" },
     { name: "الموضة", link: "pages/Departments/fashion.html" },

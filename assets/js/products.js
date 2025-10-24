@@ -39,6 +39,9 @@ function displayProducts() {
         card.innerHTML = `
             <img src="${p.image}" alt="${p.name}">
             <h4>${p.name}</h4>
+            <p style="margin:10px 0 5px; color:#00BFFF;">
+    ${p.desc || p.description ||  "لا يوجد وصف"}
+</p>
             <p>السعر: ${p.price} جنيه</p>
             <button class="buy" data-index="${index}" data-section="${sectionName || ''}">أضف إلى السلة 🛒</button>
         `;
