@@ -187,17 +187,18 @@ footer a:hover { text-decoration: underline; }
     }
 
     data.forEach((order, index) => {
-      const imageSrc = order.image || order.image_url || 'https://via.placeholder.com/60';
-      const total = order.price * order.quantity;
+      const imageSrc = order.image_url || order.image || 'https://via.placeholder.com/60';
+      const price = Number(order.price_numeric);
+      const total = price * order.quantity;
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>#${index + 1}</td>
         <td><img src="${imageSrc}" alt="${order.name}" style="width:60px; height:60px; border-radius:6px;"></td>
         <td>${order.name}</td>
-        <td>${order.price} جنيه</td>
+        <td>${price.toFixed(2)} جنيه</td>
         <td>${order.quantity}</td>
-        <td>${total} جنيه</td>
+        <td>${total.toFixed(2)} جنيه</td>
         <td>${new Date(order.date).toLocaleString()}</td>
       `;
       ordersList.appendChild(tr);
