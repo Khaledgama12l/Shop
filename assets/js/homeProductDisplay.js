@@ -189,6 +189,9 @@ function displayHomeProducts(containerId = "productsContainer") {
       card.innerHTML = `
         <img src="${p.image_url || 'https://via.placeholder.com/180x120'}" alt="${p.name}">
         <h4>${p.name}</h4>
+        <p style="margin:10px 0 5px; color:#00BFFF;">
+        ${p.description || "لا يوجد وصف"}
+      </p>
         <p>السعر: ${Number(p.price) || 0} جنيه</p>
         <button class="buy" data-id="${p.id}">أضف إلى السلة 🛒</button>
       `;
