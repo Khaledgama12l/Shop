@@ -145,40 +145,66 @@ footer a:hover { text-decoration: underline; }
 </section>
 
 <!-- الفوتر -->
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
-<script src="/assets/js/components.js"></script>
-
 <script>
-// ====== جافاسكريبت لعرض الطلبات المؤكدة ======
-let confirmedOrders = JSON.parse(localStorage.getItem('confirmedOrders')) || [];
-const ordersList = document.getElementById('orders-list');
+  // تهيئة Supabase
+  const supabaseClient = supabase.createClient(
+    'https://uwlomazzncrejbgxifuc.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV3bG9tYXp6bmNyZWpiZ3hpZnVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEzMDMwODYsImV4cCI6MjA3Njg3OTA4Nn0.2imMbjsn-7mHd28HvPTJk9BGEu04JqfcESDNoBV-pSM'
+  );
 
-function renderOrders() {
+  const ordersList = document.getElementById('orders-list');
+
+  async function fetchOrders() {
     ordersList.innerHTML = '';
-    if (confirmedOrders.length === 0) {
-        ordersList.innerHTML = `<tr><td colspan="7">لا توجد طلبات مؤكدة بعد.</td></tr>`;
-        return;
+
+    const { data, error } = await supabaseClient
+      .from('orders')
+      .select('*')
+      .order('date', { ascending: false });
+
+    if (error) {
+      console.error('❌ خطأ في جلب الطلبات:', error.message);
+      ordersList.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align:center; color:#ccc;">
+            حدث خطأ أثناء تحميل الطلبات.
+          </td>
+        </tr>
+      `;
+      return;
     }
 
-    confirmedOrders.forEach((order, index) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>#${index + 1}</td>
-            <td><img src="${order.image}" alt="${order.name}"></td>
-            <td>${order.name}</td>
-            <td>${order.price}</td>
-            <td>${order.quantity}</td>
-            <td>${order.price * order.quantity}</td>
-            <td>${order.date}</td>
-        `;
-        ordersList.appendChild(tr);
-    });
-}
+    if (!data || data.length === 0) {
+      ordersList.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align:center; color:#ccc;">
+            لا توجد طلبات مؤكدة بعد. 🛒
+          </td>
+        </tr>
+      `;
+      return;
+    }
 
-// تحميل الصفحة
-renderOrders();
+    data.forEach((order, index) => {
+      const imageSrc = order.image || order.image_url || 'https://via.placeholder.com/60';
+      const total = order.price * order.quantity;
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>#${index + 1}</td>
+        <td><img src="${imageSrc}" alt="${order.name}" style="width:60px; height:60px; border-radius:6px;"></td>
+        <td>${order.name}</td>
+        <td>${order.price} جنيه</td>
+        <td>${order.quantity}</td>
+        <td>${total} جنيه</td>
+        <td>${new Date(order.date).toLocaleString()}</td>
+      `;
+      ordersList.appendChild(tr);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', fetchOrders);
 </script>
 
 </body>
