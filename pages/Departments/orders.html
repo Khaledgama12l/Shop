@@ -114,9 +114,18 @@ footer a:hover { text-decoration: underline; }
 <body>
 
 <!-- الهيدر -->
-
-
-
+<header class="top-header">
+    <div class="logo">Dark Shop</div>
+    <div class="header-icons">
+        <a href="/index.html">الرئيسية</a>
+        <a href="/pages/Departments/account.html">الحساب</a>
+        <a href="/pages/Departments/orders.html">الطلبات</a>
+        <div id="count">
+            <span id="counter">0</span>
+            <a href="/pages/Departments/chart.html">السلة</a>
+        </div>
+    </div>
+</header>
 
 <!-- عنوان الصفحة -->
 <section class="orders-hero">
@@ -145,9 +154,16 @@ footer a:hover { text-decoration: underline; }
 </section>
 
 <!-- الفوتر -->
+<footer>
+    <p>© 2025 Dark Shop - جميع الحقوق محفوظة</p>
+</footer>
+
+<!-- مكتبة Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<!-- سكريبت الطلبات -->
 <script>
-  // تهيئة Supabase
+document.addEventListener('DOMContentLoaded', async () => {
   const supabaseClient = supabase.createClient(
     'https://uwlomazzncrejbgxifuc.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV3bG9tYXp6bmNyZWpiZ3hpZnVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEzMDMwODYsImV4cCI6MjA3Njg3OTA4Nn0.2imMbjsn-7mHd28HvPTJk9BGEu04JqfcESDNoBV-pSM'
@@ -165,36 +181,24 @@ footer a:hover { text-decoration: underline; }
 
     if (error) {
       console.error('❌ خطأ في جلب الطلبات:', error.message);
-      ordersList.innerHTML = `
-        <tr>
-          <td colspan="7" style="text-align:center; color:#ccc;">
-            حدث خطأ أثناء تحميل الطلبات.
-          </td>
-        </tr>
-      `;
+      ordersList.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#ccc;">حدث خطأ أثناء تحميل الطلبات.</td></tr>`;
       return;
     }
 
     if (!data || data.length === 0) {
-      ordersList.innerHTML = `
-        <tr>
-          <td colspan="7" style="text-align:center; color:#ccc;">
-            لا توجد طلبات مؤكدة بعد. 🛒
-          </td>
-        </tr>
-      `;
+      ordersList.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#ccc;">لا توجد طلبات مؤكدة بعد. 🛒</td></tr>`;
       return;
     }
 
     data.forEach((order, index) => {
       const imageSrc = order.image_url || order.image || 'https://via.placeholder.com/60';
-      const price = Number(order.price);
+      const price = Number(order.price); // تأكد من اسم العمود الصحيح
       const total = price * order.quantity;
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>#${index + 1}</td>
-        <td><img src="${imageSrc}" alt="${order.name}" style="width:60px; height:60px; border-radius:6px;"></td>
+        <td><img src="${imageSrc}" alt="${order.name}"></td>
         <td>${order.name}</td>
         <td>${price.toFixed(2)} جنيه</td>
         <td>${order.quantity}</td>
@@ -205,7 +209,8 @@ footer a:hover { text-decoration: underline; }
     });
   }
 
-  document.addEventListener('DOMContentLoaded', fetchOrders);
+  fetchOrders();
+});
 </script>
 
 </body>
