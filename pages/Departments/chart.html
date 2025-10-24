@@ -210,99 +210,51 @@ footer a:hover { text-decoration: underline; }
 
 <!-- الفوتر -->
 
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script>
-// ====== جافا سكريبت سلة التسوق ======
-let cart = JSON.parse(localStorage.getItem('cart')) || [];
-const cartItemsContainer = document.getElementById('cart-items');
-const cartTotal = document.getElementById('cart-total');
-const counter = document.getElementById('counter');
+  // تهيئة Supabase
+  const supabaseClient = supabase.createClient(
+  'https://uwlomazzncrejbgxifuc.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV3bG9tYXp6bmNyZWpiZ3hpZnVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEzMDMwODYsImV4cCI6MjA3Njg3OTA4Nn0.2imMbjsn-7mHd28HvPTJk9BGEu04JqfcESDNoBV-pSM'
+);
 
-function renderCart() {
-    cartItemsContainer.innerHTML = '';
-    let total = 0;
+  const ordersList = document.getElementById("orders-list");
 
-    cart.forEach((item, index) => {
-        const itemTotal = item.price * item.quantity;
-        total += itemTotal;
+  // جلب الطلبات من Supabase
+  async function fetchOrders() {
+    const { data, error } = await supabaseClient
+      .from("orders")
+      .select("*")
+      .order("date", { ascending: false });
 
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td><img src="${item.image}" alt="${item.name}"></td>
-            <td>${item.name}</td>
-            <td>${item.price}</td>
-            <td><input type="number" min="1" value="${item.quantity}" data-index="${index}" class="quantity-input"></td>
-            <td>${itemTotal}</td>
-            <td><button data-index="${index}" class="remove-btn">حذف</button></td>
-        `;
-        cartItemsContainer.appendChild(tr);
-    });
-
-    cartTotal.textContent = total;
-    if (counter) {
-    counter.textContent = cart.reduce((acc, item) => acc + item.quantity, 0);
-}
-    attachEvents();
-}
-
-function attachEvents() {
-    document.querySelectorAll('.remove-btn').forEach(btn => {
-        btn.addEventListener('click', e => {
-            const index = e.target.dataset.index;
-            cart.splice(index, 1);
-            localStorage.setItem('cart', JSON.stringify(cart));
-            renderCart();
-        });
-    });
-
-    document.querySelectorAll('.quantity-input').forEach(input => {
-        input.addEventListener('change', e => {
-            const index = e.target.dataset.index;
-            const value = parseInt(e.target.value);
-            cart[index].quantity = value > 0 ? value : 1;
-            localStorage.setItem('cart', JSON.stringify(cart));
-            renderCart();
-        });
-    });
-
-    document.getElementById('checkout-btn').addEventListener('click', () => {
-    if (cart.length === 0) {
-        alert("السلة فارغة!");
-        return;
+    if (error) {
+      console.error("❌ خطأ في جلب الطلبات:", error.message);
+      ordersList.innerHTML = "<tr><td colspan='6'>حدث خطأ في تحميل الطلبات.</td></tr>";
+      return;
     }
 
-    // الحصول على التاريخ الحالي لكل طلب
-    const date = new Date().toLocaleString();
+    if (!data || data.length === 0) {
+      ordersList.innerHTML = "<tr><td colspan='6'>لا توجد طلبات مؤكدة بعد.</td></tr>";
+      return;
+    }
 
-    // جلب الطلبات المؤكدة من localStorage أو إنشاء مصفوفة جديدة
-    let confirmedOrders = JSON.parse(localStorage.getItem('confirmedOrders')) || [];
-
-    // إضافة الطلبات الحالية إلى confirmedOrders
-    cart.forEach(item => {
-        confirmedOrders.push({
-            name: item.name,
-            price: item.price,
-            quantity: item.quantity,
-            image: item.image,
-            date: date
-        });
+    data.forEach(order => {
+      const total = order.price * order.quantity;
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><img src="${order.image_url || 'https://via.placeholder.com/60'}" alt="${order.name}"></td>
+        <td>${order.name}</td>
+        <td>${order.price}</td>
+        <td>${order.quantity}</td>
+        <td>${total}</td>
+        <td>${new Date(order.date).toLocaleString()}</td>
+      `;
+      ordersList.appendChild(tr);
     });
+  }
 
-    // حفظ الطلبات المؤكدة في localStorage
-    localStorage.setItem('confirmedOrders', JSON.stringify(confirmedOrders));
-
-    // تفريغ السلة
-    cart = [];
-    localStorage.setItem('cart', JSON.stringify(cart));
-
-    alert("تم إتمام الشراء بنجاح! يمكنك مراجعة طلبك في صفحة الطلبات المؤكدة.");
-    renderCart();
-});
-
-}
-
-// تحميل الصفحة
-renderCart();
+  // تحميل الطلبات عند فتح الصفحة
+  document.addEventListener("DOMContentLoaded", fetchOrders);
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script src="/assets/js/components.js"></script>
