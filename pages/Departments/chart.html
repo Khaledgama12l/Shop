@@ -182,33 +182,34 @@ footer a:hover { text-decoration: underline; }
 
 <!-- عنوان الصفحة -->
 <section class="cart-hero">
-    <h1>سلة التسوق الخاصة بك</h1>
-    <p>راجع منتجاتك قبل إتمام الطلب</p>
+  <h1>سلة التسوق الخاصة بك</h1>
+  <p>راجع منتجاتك قبل إتمام الطلب</p>
 </section>
 
 <!-- سلة المنتجات -->
 <section class="cart-container">
-    <table>
-        <thead>
-            <tr>
-                <th>صورة المنتج</th>
-                <th>اسم المنتج</th>
-                <th>السعر</th>
+  <table>
+    <thead>
+      <tr>
+        <th>صورة المنتج</th>
+        <th>اسم المنتج</th>
+        <th>السعر</th>
                 <th>الكمية</th>
                 <th>الإجمالي</th>
                 <th>حذف</th>
-            </tr>
-        </thead>
+              </tr>
+            </thead>
         <tbody id="cart-items"></tbody>
-    </table>
-
-    <div class="cart-summary">
+      </table>
+      
+      <div class="cart-summary">
         <h3>إجمالي السلة: <span id="cart-total">0</span> جنيه</h3>
         <button id="checkout-btn">إتمام الشراء</button>
-    </div>
-</section>
-
-<!-- الفوتر -->
+      </div>
+    </section>
+    
+    <!-- الفوتر -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 <script>
   // ====== جافا سكريبت سلة التسوق ======
@@ -265,36 +266,41 @@ footer a:hover { text-decoration: underline; }
       });
     });
 
-    document.getElementById('checkout-btn').addEventListener('click', () => {
-      if (cart.length === 0) {
-        alert("السلة فارغة!");
-        return;
-      }
+    document.getElementById('checkout-btn').addEventListener('click', async () => {
+  if (cart.length === 0) {
+    alert("السلة فارغة!");
+    return;
+  }
 
-      const date = new Date().toLocaleString();
-      let confirmedOrders = JSON.parse(localStorage.getItem('confirmedOrders')) || [];
+  const date = new Date().toISOString();
 
-      cart.forEach(item => {
-        confirmedOrders.push({
-          name: item.name,
-          price: item.price,
-          quantity: item.quantity,
-          image: item.image,
-          date: date
-        });
-      });
+  for (const item of cart) {
+    const { error } = await supabaseClient
+      .from("orders")
+      .insert([{
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        image_url: item.image || item.image_url,
+        date: date
+      }]);
 
-      localStorage.setItem('confirmedOrders', JSON.stringify(confirmedOrders));
-      cart = [];
-      localStorage.setItem('cart', JSON.stringify(cart));
-      alert("تم إتمام الشراء بنجاح! يمكنك مراجعة طلبك في صفحة الطلبات المؤكدة.");
-      renderCart();
-    });
+    if (error) {
+      console.error("❌ خطأ في حفظ الطلب:", error.message);
+      alert("حدث خطأ أثناء حفظ الطلبات!");
+      return;
+    }
+  }
+
+  cart = [];
+  localStorage.setItem("cart", JSON.stringify(cart));
+  alert("✅ تم إتمام الشراء بنجاح! يمكنك مراجعة طلبك في صفحة الطلبات.");
+  renderCart();
+});
   }
 
   document.addEventListener("DOMContentLoaded", renderCart);
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script src="/assets/js/components.js"></script>
 
 </body>
