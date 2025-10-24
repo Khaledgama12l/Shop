@@ -89,8 +89,6 @@
 
 
 
-// ======= productsAndCart.js =======
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 // تهيئة Supabase
   const supabaseClient = supabase.createClient(
